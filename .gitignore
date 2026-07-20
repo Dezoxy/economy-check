@@ -1,0 +1,8 @@
+examples/
+data/cache/
+data/logs/
+data/.gate_state.json
+.env
+.DS_Store
+__pycache__/
+*.pyc

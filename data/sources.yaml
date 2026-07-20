@@ -1,0 +1,263 @@
+# data/sources.yaml — single source registry for the whole pipeline.
+#
+# Consumers:
+#   1. .claude/hooks/net_allowlist.py  — allowed network domains = every domain listed
+#      anywhere in this file (regex-scanned, no YAML lib needed).
+#   2. shared/fetchers/               — endpoints, schema checks, fallbacks, freshness.
+#   3. .claude/skills/*               — per-job manifests (what a report run must have).
+#
+# FORMAT CONTRACT (parsed by shared/fetchers/base.py, a strict YAML subset):
+#   - 2-space indentation, no tabs, no anchors/aliases, no multiline scalars.
+#   - lists either inline [a, b] or block "- item" form.
+#   - Adding a source: id + base_url + domains + provides + schema.required minimum.
+#
+# Secrets NEVER live here — auth values are names of .env variables.
+
+version: 1
+
+# Domains allowed for ad-hoc WebFetch during runs (news verification, statements)
+# beyond the fetcher sources below. Keep tight; every addition is a review decision.
+extra_allowed_domains:
+  - reuters.com
+  - apnews.com
+  - coindesk.com
+  - theblock.co
+  - federalreserve.gov
+  - bls.gov
+  - bea.gov
+  - atlantafed.org
+  - stlouisfed.org
+  - cmegroup.com
+  - sec.gov
+  - patreon.com
+
+sources:
+
+  coingecko:
+    kind: http-json
+    base_url: https://api.coingecko.com/api/v3
+    domains: [api.coingecko.com]
+    auth: COINGECKO_API_KEY        # optional, free tier works without it
+    provides: [spot_prices, market_caps, btc_dominance, total_mcap, total3]
+    freshness_hours: 24
+    rate_limit: ~10 req/min free tier — fetchers must sleep between calls
+    fallbacks: [coinpaprika]
+    schema:
+      required: [btc_usd, eth_usd, total_mcap_usd, btc_dominance_pct]
+
+  coinpaprika:
+    kind: http-json
+    base_url: https://api.coinpaprika.com/v1
+    domains: [api.coinpaprika.com]
+    auth: null
+    provides: [spot_prices, market_caps]
+    freshness_hours: 24
+    fallbacks: []
+    schema:
+      required: [btc_usd, eth_usd]
+
+  binance_klines:
+    kind: http-json
+    base_url: https://api.binance.com/api/v3
+    domains: [api.binance.com, api1.binance.com, data-api.binance.vision]
+    auth: null
+    provides: [btc_daily_klines, btc_weekly_klines, eth_daily_klines, computed_indicators]
+    # Step D contract: this fetcher must EMIT COMPUTED INDICATORS (the reasoning plane
+    # never computes math): MA 50/100/150/200 daily + 200 weekly, Bollinger(20,2),
+    # RSI(14) + RSI-MA, anchored VWAP from cycle low, volume-profile POC.
+    # No fallback source can compute these — mirror hosts are the fetcher's own
+    # concern (domains above); a klines failure is a hard failure.
+    freshness_hours: 24
+    fallbacks: []
+    schema:
+      required: [btc_close, btc_ma50d, btc_ma200d, btc_ma200w, btc_rsi14d, eth_close]
+
+  etf_flows:
+    kind: http-html
+    base_url: https://farside.co.uk
+    domains: [farside.co.uk]
+    auth: null
+    provides: [us_spot_btc_etf_flows, us_spot_eth_etf_flows]
+    # T+1 delay is inherent — reports must label flow dates explicitly.
+    freshness_hours: 48
+    fallbacks: [sosovalue]
+    schema:
+      required: [btc_daily_flows_musd, btc_week_total_musd]
+
+  sosovalue:
+    kind: http-json
+    base_url: https://api.sosovalue.com
+    domains: [api.sosovalue.com, sosovalue.com]
+    auth: SOSOVALUE_API_KEY
+    provides: [us_spot_btc_etf_flows, us_spot_eth_etf_flows]
+    # Fallback duty for etf_flows: this fetcher must emit etf_flows' full schema
+    # (incl. btc_week_total_musd — summed from dailies in fetcher code).
+    freshness_hours: 48
+    fallbacks: []
+    schema:
+      required: [btc_daily_flows_musd, btc_week_total_musd]
+
+  defillama:
+    kind: http-json
+    base_url: https://api.llama.fi
+    domains: [api.llama.fi, stablecoins.llama.fi]
+    auth: null
+    provides: [tvl_total, tvl_by_chain, stablecoin_supply, stablecoin_deltas]
+    freshness_hours: 24
+    fallbacks: []
+    schema:
+      required: [tvl_total_usd, stablecoin_total_musd, usdt_mcap_musd, usdc_mcap_musd]
+
+  mempool:
+    kind: http-json
+    base_url: https://mempool.space/api
+    domains: [mempool.space]
+    auth: null
+    provides: [btc_fees, hashrate, difficulty, mempool_size]
+    freshness_hours: 24
+    fallbacks: []
+    schema:
+      required: [hashrate_ehs, fee_fast_satvb]
+
+  feargreed:
+    kind: http-json
+    base_url: https://api.alternative.me
+    domains: [api.alternative.me, alternative.me]
+    auth: null
+    provides: [fear_greed_index, fear_greed_history]
+    freshness_hours: 24
+    fallbacks: []
+    schema:
+      required: [value, classification, week_ago_value]
+
+  binance_funding:
+    kind: http-json
+    base_url: https://fapi.binance.com
+    domains: [fapi.binance.com]
+    auth: null
+    provides: [btc_funding_rate, eth_funding_rate, open_interest]
+    freshness_hours: 24
+    fallbacks: []
+    schema:
+      required: [btc_funding_pct, btc_oi_usd]
+
+  fred:
+    kind: http-json
+    base_url: https://api.stlouisfed.org/fred
+    domains: [api.stlouisfed.org]
+    auth: FRED_API_KEY             # required — free key, https://fred.stlouisfed.org
+    provides: [cpi, pce, payrolls, unemployment, gdp, dxy_proxy, ust_yields]
+    # Macro prints must be reported actual vs consensus vs prior + revisions;
+    # FRED gives actual+prior+revisions; consensus comes from rss_news/websearch.
+    freshness_hours: 24
+    fallbacks: []
+    schema:
+      required: [series]
+
+  gdpnow:
+    kind: http-html
+    base_url: https://www.atlantafed.org/cqer/research/gdpnow
+    domains: [atlantafed.org, www.atlantafed.org]
+    auth: null
+    provides: [gdpnow_estimate, gdpnow_component_moves]
+    freshness_hours: 72
+    fallbacks: []
+    schema:
+      required: [estimate_pct, as_of_date]
+
+  fed_calendar:
+    kind: http-html
+    base_url: https://www.federalreserve.gov/monetarypolicy/fomccalendars.htm
+    domains: [federalreserve.gov, www.federalreserve.gov]
+    auth: null
+    provides: [fomc_dates, fed_speakers]
+    freshness_hours: 168
+    fallbacks: []
+    schema:
+      required: [next_fomc_date]
+
+  econ_calendar:
+    kind: http-html
+    base_url: https://www.bls.gov/schedule/news_release
+    domains: [bls.gov, www.bls.gov, bea.gov, www.bea.gov]
+    auth: null
+    provides: [cpi_dates, jobs_dates, gdp_dates, pce_dates]
+    freshness_hours: 168
+    fallbacks: []
+    schema:
+      required: [upcoming]
+
+  cme_fedwatch:
+    kind: http-html
+    base_url: https://www.cmegroup.com/markets/interest-rates/cme-fedwatch-tool.html
+    domains: [cmegroup.com, www.cmegroup.com]
+    auth: null
+    provides: [rate_cut_odds]
+    # JS-heavy page — automated scrape unreliable. Policy: fetcher tries; on failure the
+    # report cites FedWatch odds VIA a dated news source ("a CME FedWatch szerint, Reuters
+    # nyomán") and labels it relayed. Never invent probabilities. (That editorial
+    # fallback happens in prose — rss_news can't satisfy this schema, so no
+    # fetcher-level fallback is registered.)
+    freshness_hours: 24
+    fallbacks: []
+    schema:
+      required: [next_meeting_odds]
+
+  fx_rates:
+    kind: http-json
+    base_url: https://api.frankfurter.dev/v1
+    domains: [api.frankfurter.dev, api.frankfurter.app, frankfurter.dev]
+    auth: null
+    provides: [usd_huf, eur_huf, usd_eur]
+    # ECB reference rates — weekend runs get Friday's fix; the report labels the
+    # rate date. This is what makes "forintosítva ~X MRD HUF" conversions citable:
+    # prose converts APPROXIMATELY (nagyjából) against this cached rate,
+    # tagged [src:fx_rates/date] — the one permitted derived-figure class
+    # (fact-checker recomputes and tolerates ±5%).
+    freshness_hours: 96
+    fallbacks: []
+    schema:
+      required: [usd_huf, eur_huf, rate_date]
+
+  rss_news:
+    kind: http-rss
+    base_url: multiple
+    domains: [feeds.reuters.com, reuters.com, apnews.com, coindesk.com, www.coindesk.com, theblock.co, www.theblock.co]
+    auth: null
+    provides: [headlines_macro, headlines_crypto, headlines_geo]
+    feeds:
+      - https://www.coindesk.com/arc/outboundfeeds/rss/
+      - https://www.theblock.co/rss.xml
+      - https://apnews.com/hub/business/rss
+    freshness_hours: 24
+    fallbacks: []
+    schema:
+      required: [items]
+
+# ---------------------------------------------------------------------------
+# Per-job data manifests — what step D must fetch, what a run must have in cache.
+# A report run MUST refuse to compose if a `required` source is missing/stale
+# (quality gate checks freshness_hours against cache timestamps).
+# `degraded` sources allow the run but force a confidence label in the report.
+# ---------------------------------------------------------------------------
+manifests:
+
+  weekly-market-update:
+    required: [coingecko, binance_klines, defillama, feargreed, binance_funding, fred]
+    degraded_ok: [etf_flows, mempool, gdpnow, cme_fedwatch, rss_news, fed_calendar, econ_calendar, fx_rates]
+    in_run_tools: [websearch_geopolitics]
+
+  event-note-fomc:
+    required: [fred, fed_calendar]
+    degraded_ok: [coingecko, binance_klines, cme_fedwatch, rss_news]
+    in_run_tools: [websearch_statement_text]
+
+  onchain-review:
+    required: [etf_flows, defillama, mempool, feargreed]
+    degraded_ok: [binance_funding, coingecko]
+    in_run_tools: []
+
+  altcoin-screen:
+    required: [coingecko, defillama]
+    degraded_ok: [binance_klines, rss_news]
+    in_run_tools: [websearch_tokenomics]

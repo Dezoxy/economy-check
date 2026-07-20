@@ -1,0 +1,62 @@
+{
+  "permissions": {
+    "allow": [
+      "Read",
+      "Glob",
+      "Grep",
+      "WebSearch",
+      "WebFetch",
+      "Bash(python3 shared/fetchers/*)",
+      "Bash(python3 shared/delivery/deliver.py --report*)",
+      "Bash(python3 shared/delivery/deliver.py --alert*)",
+      "Bash(python3 shared/delivery/deliver.py --dry-run*)",
+      "Bash(python3 shared/scripts/*)",
+      "Bash(python3 .claude/hooks/*)",
+      "Bash(git status)",
+      "Bash(git diff*)",
+      "Bash(git log*)",
+      "Bash(ls*)",
+      "Bash(wc*)"
+    ],
+    "deny": [
+      "Read(**/.env)",
+      "Read(./.env)",
+      "Bash(git push*)",
+      "Bash(rm -rf*)"
+    ]
+  },
+  "hooks": {
+    "PreToolUse": [
+      {
+        "matcher": "WebFetch|Bash",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "python3 \"${CLAUDE_PROJECT_DIR}/.claude/hooks/net_allowlist.py\""
+          }
+        ]
+      }
+    ],
+    "PostToolUse": [
+      {
+        "matcher": "Write|Edit|MultiEdit",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "python3 \"${CLAUDE_PROJECT_DIR}/.claude/hooks/report_lint.py\""
+          }
+        ]
+      }
+    ],
+    "Stop": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "python3 \"${CLAUDE_PROJECT_DIR}/.claude/hooks/quality_gate.py\""
+          }
+        ]
+      }
+    ]
+  }
+}
