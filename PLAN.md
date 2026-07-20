@@ -90,6 +90,13 @@ The KriptoVadász replacement. Benchmark corpus: 132 posts (Jan 2025 + Dec 2025 
 
 - [x] **A. Corpus** — `corpus.jsonl` built (743K chars, 1 junk file skipped)
 - [x] **B. Derive** — done via 4-agent corpus analysis → `templates/`: heti-piaci-update.md, event-note.md (FOMC/macro/geo/thematic/institutional), onchain-review.md, altcoin-screen.md, rubric.md (/100, publish gate ≥80), style-guide.md, prediction-ledger.md (schema + 41 graded KV calls seeded; KV baseline: 49% hit / 37% partial / 15% miss, misses never self-acknowledged — our bar: beat it symmetrically)
+- [x] **B2. Doctrine** — `templates/analytical-doctrine.md`: his reasoning playbook
+      (28 canonical patterns from 144 mined instances, full corpus), outcome-weighted
+      by the graded ledger (ADOPT his proven level-confluence/positioning/decomposition
+      families; EXTRA SKEPTICISM on his miss clusters: event-timelines, relayed official
+      forecasts, nowcast-vs-print). Loaded by all analysts + composer; patterns cited
+      by name in briefs so the fact-checker audits reasoning provenance. This is the
+      "clone the mind" artifact — and the reusable core for Phases 2–4 + /elemzes.
 - [x] **C. Wire** — skill `weekly-market-update` (full pipeline: verify → 4 parallel analyst briefs → compose → ledger → fact-check loop → editor score → gated delivery; `dry-run` mode = acceptance check, passed headless 2026-07-20); subagents macro/crypto/onchain/sentiment-analyst wired to cache files + section assignments; data manifests in sources.yaml; `ledger.jsonl` seeded via `seed_ledger.py` (42 benchmark calls — note: templates table has 14 partials vs 15 claimed in its own baseline line, flagged to tom). Later skills (`event-note`, `onchain-review`, `altcoin-screen`) follow the same pattern after E/F prove it.
 - [ ] **D. Data** — CoinGecko (prices/mcap/dominance), Binance klines (TA), Farside/SoSoValue (ETF flows), DefiLlama (TVL, stablecoins), mempool.space (BTC onchain), alternative.me (Fear&Greed), Binance funding, FRED (macro), Fed calendar, RSS news + in-run WebSearch for geopolitics. *Known limit: pro-tier onchain (Glassnode/CryptoQuant) is paywalled → free proxies, confidence labeled.*
 - [ ] **E. First report** — current week's *heti piaci update*, Hungarian, full gate pass
@@ -120,6 +127,9 @@ weekly quality is proven, so the daily habit inherits a validated pipeline.
 
 ## Backlog / ideas (unscheduled)
 
+- `/elemzes "<question>"` ad-hoc analysis skill — apply the doctrine + cached data +
+  fact-check discipline to ANY question tom asks, independent of report formats
+  (the "use his mentality for my own questions" endpoint; build after E proves the pipeline)
 - AMERIKAI PIAC [EXT] section needs an owner (macro-analyst is natural) + an equity
   index source (stooq or FRED SP500) + earnings-calendar policy before first monthly
 - Bash-level curl allowlisting is best-effort by design (exotic quoting can evade);
@@ -143,4 +153,10 @@ weekly quality is proven, so the daily habit inherits a validated pipeline.
 
 - 2026-07-20 — Plan created. Phase 0 partially done (.gitignore, ingest script, folder layout). Phase 1 step A complete: 132-post corpus extracted on-device to `crypto-analyst/corpus/corpus.jsonl`.
 - 2026-07-20 — Phase 1 step B complete (in Cowork): 4 parallel agents analyzed the full corpus (flagship weeklies+PDFs, 52 event notes, summaries/alt/onchain, predictions). 7 foundation artifacts written to `crypto-analyst/templates/`. Handoff: continue in Claude Code with Phase 0 scaffold + Phase 1 step C ("Read PLAN.md and continue with the current phase").
+- 2026-07-20 — Phase 1 step B2 (doctrine): mined all 8 corpus slices for reasoning
+  patterns (144 instances, 64 indicators, 64 discipline rules; 8-agent workflow),
+  synthesized in-session into `analytical-doctrine.md` (28 canonical patterns +
+  Súlyozás verdicts from the graded ledger + "Miénk, nem az övé" deltas), wired into
+  all 4 analysts + skill context-load. `/elemzes` ad-hoc skill added to backlog as
+  the generalization endpoint.
 - 2026-07-20 — Phase 0 scaffold + Phase 1 step C complete (Claude Code). Built: AGENTS.md/CLAUDE.md, 3 hooks + settings, sources.yaml (16 sources/4 manifests) + fetcher framework (coingecko live-tested), delivery (gate-checked), run_job.sh, weekly-market-update skill + 6 subagents, ledger.jsonl (42 benchmark calls). Verified: deterministic hook/gate/delivery test suite + headless skill dry-run (passed) + adversarial multi-lens review (31 findings raised, ~25 confirmed & fixed — incl. allowlist @-bypass, Stop-gate read-only false positive, headless-delivery permission block, HU magnitude-word lint gaps, missing fx_rates source; 2 rejected; rubric-A4 & [EXT]-section items → backlog). Next: step D fetchers, .env secrets, GitHub push decision.

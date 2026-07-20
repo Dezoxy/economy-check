@@ -41,8 +41,9 @@ Then stop. This is the step C acceptance check.
 ## Step 1 — Context load
 
 Read: `crypto-analyst/templates/heti-piaci-update.md` (structure),
-`style-guide.md` (voice), `rubric.md` (what gets scored),
-`prediction-ledger.md` (grading rules), `crypto-analyst/ledger.jsonl`
+`style-guide.md` (voice), `analytical-doctrine.md` (the reasoning playbook —
+compose with its patterns, respect its Súlyozás verdicts), `rubric.md` (what
+gets scored), `prediction-ledger.md` (grading rules), `crypto-analyst/ledger.jsonl`
 (due calls + last week's poll), and the previous report in
 `crypto-analyst/reports/` if one exists (continuity: "ahogy a múlt heti anyagban…",
 open promises to close).
