@@ -21,7 +21,9 @@ TYPE_MAP = {
     "risk-flag": "risk-flag",
     "position": "position",
 }
-OUTCOME_MAP = {"✅": "hit", "➖": "partial", "❌": "miss", "?": "unresolved"}
+OUTCOME_MAP = {"✅": "hit", "➖": "partial", "❌": "miss", "?": "unresolved",
+               "⌛": "expired-vague"}
+GRADED = {"hit", "partial", "miss"}   # expired-vague/unresolved are excluded from N
 
 
 def parse_rows(text):
@@ -74,8 +76,12 @@ def main():
             "outcome": outcome,
             "outcome_evidence": evidence,
             "graded_on": "2026-07-20",
-            # benchmark pattern: hits credited in posts, misses never acknowledged
-            "self_review": outcome == "hit",
+            # Benchmark pattern: hits get credited in later posts, misses vanish.
+            # Only claim self_review where the corpus actually shows it — the audit
+            # found explicit self-acknowledgment quotes for some hits and silent
+            # drops for 4 misses ("silently dropped" in the evidence column).
+            "self_review": (outcome == "hit"
+                            and "silently dropped" not in evidence.lower()),
             "band_definition": None,
         })
 
@@ -97,6 +103,16 @@ def main():
     print("wrote %d benchmark calls (+%d preserved own calls) -> %s"
           % (len(out), len(kept), os.path.relpath(DST, ROOT)))
     print("outcomes:", json.dumps(tally, ensure_ascii=False))
+    n = sum(v for k, v in tally.items() if k in GRADED)
+    if n:
+        print("graded N=%d — hit %.0f%% / partial %.0f%% / miss %.0f%%  (this is the "
+              "bar to beat; see baseline line in prediction-ledger.md)"
+              % (n, 100 * tally.get("hit", 0) / n, 100 * tally.get("partial", 0) / n,
+                 100 * tally.get("miss", 0) / n))
+    silent = sum(1 for r in out
+                 if r["outcome"] == "miss" and not r["self_review"])
+    print("silent misses (never acknowledged by the benchmark): %d of %d"
+          % (silent, tally.get("miss", 0)))
 
 
 if __name__ == "__main__":
