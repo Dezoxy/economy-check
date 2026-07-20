@@ -9,7 +9,9 @@ by the same grader prompt; ours must average ≥ theirs.
 - [5] Every number carries `[src:provider/date]`; zero naked numbers (lint-checked).
 - [5] Macro prints given as actual vs consensus vs prior + revisions.
 - [4] Expectation shifts as before→after (CME odds, etc.).
-- [4] Data freshness ≤ 24h at publish (cache timestamps verified).
+- [4] Data freshness: every cited source within its registered `freshness_hours`
+      (data/sources.yaml — e.g. prices 24h, ETF flows 48h/T+1, calendars 168h);
+      anything older, and inherently lagged data (T+1), labeled as such in prose.
 - [4] Named sources for claims ("Reuters szerint", survey N + AUM + field dates) —
       no "a hírek szerint".
 - [3] Proxy/paywalled-data substitutions labeled with confidence.

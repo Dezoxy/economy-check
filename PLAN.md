@@ -70,8 +70,8 @@ what is **unique** to that job. Quality bar: a job is not "done" until step G pa
 Built once, used by every job. Steps:
 
 - [x] Repo folder + `.gitignore` (examples/, data/cache/, .env)
-- [ ] `git init` ✅ + local first commit ✅ — private GitHub repo + push **pending tom's
-      explicit OK** (corpus = paid content leaving the machine, even to a private repo)
+- [x] `git init`, private GitHub repo `economy-check` (Dezoxy/economy-check), first push
+      (2026-07-20, tom OK'd pushing the corpus to the private repo)
 - [x] `AGENTS.md` (constitution: mission, hard rules, workflow index) + thin `CLAUDE.md`
 - [x] `.claude/settings.json` + hooks: `net_allowlist.py` (PreToolUse: only sources.yaml domains, fail-closed, userinfo-bypass-proof), `report_lint.py` (PostToolUse: sections, no naked numbers incl. HU magnitude words, freshness), `quality_gate.py` (Stop: score sidecar ≥80 + category floors, 3-attempt cap, engages only when the session wrote a report)
 - [x] Shared subagents: `fact-checker.md`, `editor.md` (job-agnostic, parameterized by job folder)
@@ -120,9 +120,6 @@ weekly quality is proven, so the daily habit inherits a validated pipeline.
 
 ## Backlog / ideas (unscheduled)
 
-- Rubric A4 ("freshness ≤24h") conflicts with registered source realities (etf_flows
-  T+1/48h, gdpnow 72h, calendars 168h) — tom to amend A4 to "within each source's
-  registered freshness_hours, staleness labeled in prose" before step F scoring
 - AMERIKAI PIAC [EXT] section needs an owner (macro-analyst is natural) + an equity
   index source (stooq or FRED SP500) + earnings-calendar policy before first monthly
 - Bash-level curl allowlisting is best-effort by design (exotic quoting can evade);
