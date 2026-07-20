@@ -98,7 +98,20 @@ The KriptoVadász replacement. Benchmark corpus: 132 posts (Jan 2025 + Dec 2025 
       by name in briefs so the fact-checker audits reasoning provenance. This is the
       "clone the mind" artifact — and the reusable core for Phases 2–4 + /elemzes.
 - [x] **C. Wire** — skill `weekly-market-update` (full pipeline: verify → 4 parallel analyst briefs → compose → ledger → fact-check loop → editor score → gated delivery; `dry-run` mode = acceptance check, passed headless 2026-07-20); subagents macro/crypto/onchain/sentiment-analyst wired to cache files + section assignments; data manifests in sources.yaml; `ledger.jsonl` seeded via `seed_ledger.py` (42 benchmark calls — note: templates table has 14 partials vs 15 claimed in its own baseline line, flagged to tom). Later skills (`event-note`, `onchain-review`, `altcoin-screen`) follow the same pattern after E/F prove it.
-- [ ] **D. Data** — CoinGecko (prices/mcap/dominance), Binance klines (TA), Farside/SoSoValue (ETF flows), DefiLlama (TVL, stablecoins), mempool.space (BTC onchain), alternative.me (Fear&Greed), Binance funding, FRED (macro), Fed calendar, RSS news + in-run WebSearch for geopolitics. *Known limit: pro-tier onchain (Glassnode/CryptoQuant) is paywalled → free proxies, confidence labeled.*
+- [x] **D. Data** — 14 fetchers implemented + live-tested 2026-07-20 (11 green, all
+      schema-checked): binance_klines with the full indicator contract (MA50/100/150/200d,
+      200w, Bollinger, RSI+RSI-MA daily+weekly, VWAP anchored at the TRUE 2022 cycle
+      trough via 2-page kline history, POC + volume shelves — math proven by
+      `test_indicators.py`), coingecko(+coinpaprika fallback), defillama (TVL+stablecoin
+      w/w deltas), feargreed, binance_funding (funding+OI), fx_rates (ECB/frankfurter),
+      mempool, etf_flows (farside scrape, T+1 placeholder-aware), gdpnow (official RSS —
+      tool page is JS), fed_calendar (FOMC scrape, 55 meetings parsed), rss_news
+      (DTD-rejecting stdlib parse), econ_calendar (FRED releases API — bls.gov blocks
+      bots), cme_fedwatch (graceful-fail by design → relayed-via-news policy).
+      **Blocked on tom:** `FRED_API_KEY` in `.env` (see `.env.example`) — fred is a
+      required source, verify FAILs until then. sosovalue fallback needs its key (optional).
+      *Known limit: pro-tier onchain (Glassnode/CryptoQuant) paywalled → free proxies,
+      confidence labeled.*
 - [ ] **E. First report** — current week's *heti piaci update*, Hungarian, full gate pass
 - [ ] **F. Backtest** — regenerate 2–3 past weeks (as-of data from cache/corpus dates), rubric-score vs the real KV weeklies, iterate skills until ≥ parity
 - [ ] **G. Operate** — Sunday 18:00 weekly run; FOMC/CPI event-notes triggered from econ calendar; Telegram + email; score trend + ledger review monthly
@@ -144,7 +157,7 @@ weekly quality is proven, so the daily habit inherits a validated pipeline.
 | Phase | Job | Status |
 |---|---|---|
 | 0 | foundation | 🟢 built + tested (pending: .env secrets, GitHub push decision) |
-| 1 | crypto-analyst | 🟡 steps A+B+C ✅, next: D (fetchers — binance_klines w/ indicators first) |
+| 1 | crypto-analyst | 🟡 A+B+B2+C+D ✅ — next: E (first report; needs FRED_API_KEY in .env) |
 | 2 | macro-analyst | ⚪ planned |
 | 3 | portfolio-review | ⚪ planned |
 | 4 | daily-pulse | ⚪ planned |
@@ -153,6 +166,12 @@ weekly quality is proven, so the daily habit inherits a validated pipeline.
 
 - 2026-07-20 — Plan created. Phase 0 partially done (.gitignore, ingest script, folder layout). Phase 1 step A complete: 132-post corpus extracted on-device to `crypto-analyst/corpus/corpus.jsonl`.
 - 2026-07-20 — Phase 1 step B complete (in Cowork): 4 parallel agents analyzed the full corpus (flagship weeklies+PDFs, 52 event notes, summaries/alt/onchain, predictions). 7 foundation artifacts written to `crypto-analyst/templates/`. Handoff: continue in Claude Code with Phase 0 scaffold + Phase 1 step C ("Read PLAN.md and continue with the current phase").
+- 2026-07-20 — Phase 1 step D (fetchers): 14 modules + indicators.py (tested math)
+  live-run against real APIs; 11/14 green, remaining 3 are key-gated (FRED ×2) or
+  policy-fail (FedWatch JS). Cache for 2026-07-20 populated. Fixes en route: VWAP
+  anchor paginated to the real 2022 trough; GDPNow moved to its RSS; econ_calendar
+  moved to FRED releases API (BLS 403s bots); farside T+1 placeholder excluded from
+  week totals. `.env.example` added — tom: fill FRED_API_KEY to unblock step E.
 - 2026-07-20 — Phase 1 step B2 (doctrine): mined all 8 corpus slices for reasoning
   patterns (144 instances, 64 indicators, 64 discipline rules; 8-agent workflow),
   synthesized in-session into `analytical-doctrine.md` (28 canonical patterns +

@@ -156,7 +156,8 @@ sources:
 
   gdpnow:
     kind: http-html
-    base_url: https://www.atlantafed.org/cqer/research/gdpnow
+    base_url: https://www.atlantafed.org/rss/GDPNow
+    # tool page is JS-rendered; the official RSS carries the estimate + delta
     domains: [atlantafed.org, www.atlantafed.org]
     auth: null
     provides: [gdpnow_estimate, gdpnow_component_moves]
@@ -177,10 +178,11 @@ sources:
       required: [next_fomc_date]
 
   econ_calendar:
-    kind: http-html
-    base_url: https://www.bls.gov/schedule/news_release
-    domains: [bls.gov, www.bls.gov, bea.gov, www.bea.gov]
-    auth: null
+    kind: http-json
+    base_url: https://api.stlouisfed.org/fred/release/dates
+    # bls.gov 403-blocks unattended fetches; FRED mirrors the release schedule.
+    domains: [api.stlouisfed.org, bls.gov, www.bls.gov, bea.gov, www.bea.gov]
+    auth: FRED_API_KEY
     provides: [cpi_dates, jobs_dates, gdp_dates, pce_dates]
     freshness_hours: 168
     fallbacks: []
