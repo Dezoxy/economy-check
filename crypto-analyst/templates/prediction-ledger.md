@@ -31,12 +31,13 @@ this file holds the schema, grading rules, and the human-readable seed.
 2. Conditional calls whose condition never fired → `condition-unmet` (not miss).
 3. Relayed calls tally separately (they measure curation, not analysis).
 4. Monthly recap: hit-rate by call_type, "Tévedtünk / Igazunk lett" section.
-5. Target to beat (benchmark baseline below): >52% hit, <16% miss on own calls, AND
+5. Target to beat (benchmark baseline below): >53% hit, <16% miss on own calls, AND
    0 silent misses (benchmark had many — every KV miss below vanished from his posts).
 
-## Benchmark baseline (KriptoVadász, Jan–Jul 2026, N=50 graded)
-**✅ 26 hits (52%) · ➖ 16 partial (32%) · ❌ 8 miss (16%)** (+3 unresolved, 1 in-table
-expired-vague; outcome symbols: ✅ hit · ➖ partial · ❌ miss · ? unresolved · ⌛ expired-vague)
+## Benchmark baseline (KriptoVadász, Jan–Jul 2026, N=51 graded)
+**✅ 27 hits (~53%) · ➖ 16 partial (~31%) · ❌ 8 miss (~16%)** (+2 unresolved, 1 in-table
+expired-vague; outcome symbols: ✅ hit · ➖ partial · ❌ miss · ? unresolved · ⌛ expired-vague.
+Schwab 04-05 graded ✅ in our 2026-07-21 report — external verification, launched 05-13.)
 Pattern: level/roadmap calls near-flawless (65,500 support hit exactly; FVG-fill scenarios
 played out); data-reinterpretations strong (GDP-import arithmetic, PCE peak); misses cluster
 in event-timeline calls (Clarity Act ×2), relayed direction under geopolitics (oil
@@ -80,7 +81,7 @@ rule ("vague = expired-vague at +30d") and excluded from graded N.
 | 03-29 | ETF | MS ETF launch ~2 weeks (relayed Balchunas) | event | ✅ | launched 04-08/12 |
 | 03-29 | BTC | If weekly trend support lost → air down to ~60k (CBD zone) | cond-scenario | ✅ | triggered June → 58,189 (07-05) |
 | 04-05 | GDP | GDP dip = import/statistical, optimistic path if AI capex lands | data-reint | ✅ | GDPNow 3→4.3% (05) |
-| 04-05 | adoption | Schwab Crypto (spot BTC/ETH) launch before end-Q2 (relayed) | event | ? | deadline passed, corpus silent — verify externally |
+| 04-05 | adoption | Schwab Crypto (spot BTC/ETH) launch before end-Q2 (relayed) | event | ✅ | launched 05-13 (theblock.co, coindesk.com); graded in our 07-21 report |
 | 04-05 | BTC | Coiling wedge + fading volume = breakout setup (no direction) | risk-flag | ➖ | upside break 04-12 |
 | 04-12 | BTC | Strategy STRC raise (~9,173 BTC) = buy pressure if converted | cond-scenario | ✅ | rally into mid-May |
 | 04-12 | ETF | MS ETH + SOL ETFs "soon" (relayed) | event | ➖ | SOL S-1 06-28; ETH no |

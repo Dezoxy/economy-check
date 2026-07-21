@@ -112,7 +112,13 @@ The KriptoVadász replacement. Benchmark corpus: 132 posts (Jan 2025 + Dec 2025 
       required source, verify FAILs until then. sosovalue fallback needs its key (optional).
       *Known limit: pro-tier onchain (Glassnode/CryptoQuant) paywalled → free proxies,
       confidence labeled.*
-- [ ] **E. First report** — current week's *heti piaci update*, Hungarian, full gate pass
+- [x] **E. First report** — `reports/2026/2026-07-21-heti-piaci-update.md`, full pipeline
+      (4 parallel analyst briefs → compose → 13 own ledger calls + 1 benchmark call graded
+      (Schwab ✅, externally verified) → fact-checker 2 passes (6+2 findings, all fixed —
+      incl. a real weekday error and 3 ledger-integrity catches) → editor **95.5/100 PASS**
+      (residue: length over band, missing Érdekesség/self-Q&A voice devices, hyphenation
+      sweep — fixes queued in the score sidecar for issue #2). Delivery pending channel
+      secrets (TELEGRAM_*/SMTP_ in .env).
 - [ ] **F. Backtest** — regenerate 2–3 past weeks (as-of data from cache/corpus dates), rubric-score vs the real KV weeklies, iterate skills until ≥ parity
 - [ ] **G. Operate** — Sunday 18:00 weekly run; FOMC/CPI event-notes triggered from econ calendar; Telegram + email; score trend + ledger review monthly
 
@@ -143,6 +149,8 @@ weekly quality is proven, so the daily habit inherits a validated pipeline.
 - `/elemzes "<question>"` ad-hoc analysis skill — apply the doctrine + cached data +
   fact-check discipline to ANY question tom asks, independent of report formats
   (the "use his mentality for my own questions" endpoint; build after E proves the pipeline)
+- etf_flows fetcher: emit `prev_week_total_musd` (summed in code) so reports can cite
+  the w/w comparison without reasoning-plane arithmetic (fact-checker F4, 2026-07-21)
 - AMERIKAI PIAC [EXT] section needs an owner (macro-analyst is natural) + an equity
   index source (stooq or FRED SP500) + earnings-calendar policy before first monthly
 - Bash-level curl allowlisting is best-effort by design (exotic quoting can evade);
@@ -157,7 +165,7 @@ weekly quality is proven, so the daily habit inherits a validated pipeline.
 | Phase | Job | Status |
 |---|---|---|
 | 0 | foundation | 🟢 built + tested (pending: .env secrets, GitHub push decision) |
-| 1 | crypto-analyst | 🟡 A+B+B2+C+D ✅ — next: E (first report; needs FRED_API_KEY in .env) |
+| 1 | crypto-analyst | 🟡 A+B+B2+C+D+E ✅ — next: F (backtest 2–3 weeks, incl. one Apr–Jul week) |
 | 2 | macro-analyst | ⚪ planned |
 | 3 | portfolio-review | ⚪ planned |
 | 4 | daily-pulse | ⚪ planned |
@@ -166,6 +174,12 @@ weekly quality is proven, so the daily habit inherits a validated pipeline.
 
 - 2026-07-20 — Plan created. Phase 0 partially done (.gitignore, ingest script, folder layout). Phase 1 step A complete: 132-post corpus extracted on-device to `crypto-analyst/corpus/corpus.jsonl`.
 - 2026-07-20 — Phase 1 step B complete (in Cowork): 4 parallel agents analyzed the full corpus (flagship weeklies+PDFs, 52 event notes, summaries/alt/onchain, predictions). 7 foundation artifacts written to `crypto-analyst/templates/`. Handoff: continue in Claude Code with Phase 0 scaffold + Phase 1 step C ("Read PLAN.md and continue with the current phase").
+- 2026-07-21 — Phase 1 step E: first real weekly report through the full gate, 95.5/100.
+  Pipeline behaved as designed: lint blocked one naked number mid-compose; fact-checker
+  failed the first pass (weekday error, ledger claim_verbatim integrity, derived-sum
+  flag, 2 more) and passed the re-check; editor scored honestly with itemized evidence.
+  Ledger: +13 own calls with deadlines (first due 2026-07-23), Schwab benchmark call
+  graded ✅ hit (launched 05-13, verified externally). Delivery awaits TELEGRAM_*/SMTP_*.
 - 2026-07-20 — Phase 1 step D (fetchers): 14 modules + indicators.py (tested math)
   live-run against real APIs; 11/14 green, remaining 3 are key-gated (FRED ×2) or
   policy-fail (FedWatch JS). Cache for 2026-07-20 populated. Fixes en route: VWAP

@@ -1,0 +1,49 @@
+{
+  "report": "crypto-analyst/reports/2026/2026-07-21-heti-piaci-update.md",
+  "scored_at": "2026-07-21T18:00:00+02:00",
+  "rubric": "crypto-analyst/templates/rubric.md",
+  "total": 95.5,
+  "categories": {
+    "A_data_sourcing":   {"score": 25,   "max": 25},
+    "B_coverage":        {"score": 18.5, "max": 20},
+    "C_depth_mechanism": {"score": 20,   "max": 20},
+    "D_balance_risk":    {"score": 15,   "max": 15},
+    "E_accountability":  {"score": 10,   "max": 10},
+    "F_voice_language":  {"score": 7,    "max": 10}
+  },
+  "items": [
+    {"id": "A1", "points": 5, "max": 5, "evidence": "Lint-enforced; spot-check clean across all 36 tag-bearing lines — e.g. L16 CPI triad fully tagged, L41 every level [src:binance_klines/2026-07-21], HUF conversions tagged [src:fx_rates/2026-07-21] (L30, L57). No naked number found."},
+    {"id": "A2", "points": 5, "max": 5, "evidence": "L16: 'havi alapon teny -0,4% a -0,1%-os konszenzus es a majusi +0,5% utan'; y/y 3,46% vs 3,8% vs 4,17%. L18: payrolls 57e vs 110e konszenzus, revision 172e->129e named. Minor gap (core CPI priors, u-rate consensus) noted in fixes, below half-item threshold."},
+    {"id": "A3", "points": 4, "max": 4, "evidence": "L20: FedWatch '43%-rol 13%-ra omlott'; L22: GDPNow 2,5%->1,2%, component move 8,5%->6,5% — all before->after."},
+    {"id": "A4", "points": 4, "max": 4, "evidence": "Same-day cache tags (binance_klines, defillama, mempool, feargreed, fred 2026-07-21); etf_flows T+1 labeled by day ('hetfon +226,8 millio', L30); stale GDPNow explicitly labeled 'julius 1-i allas — 20 napos... HIANYZO ADAT' (L22); degraded cme_fedwatch relayed via dated CoinDesk with explicit label (L20) — the sanctioned pattern."},
+    {"id": "A5", "points": 4, "max": 4, "evidence": "L20 'CoinDesk nyoman, relayed'; speakers named (Warsh, Cook, Waller) with federalreserve.gov tags; L7 Trump quote with Tukorforditasban + axios.com tag. Zero 'a hirek szerint'."},
+    {"id": "A6", "points": 3, "max": 3, "evidence": "L59: 'Balna-kohorsz adat: HIANYZO ADAT (fizetos forras)... az ETF-flow mint intezmenyi proxy kozelito adat, kozepes megbizhatosag' — substitution labeled with confidence."},
+    {"id": "B1", "points": 6, "max": 6, "evidence": "Verbatim ritual opening (L3); sections in exact template order: VILAG/GEOPOLITIKA (L5), MAKRO (L14), KOMMENTAR (L24), KRIPTO/VALLALATI HIREK (L28), BITCOIN (L36), ONCHAIN (L52), OSSZESSEGEBEN (L63), JOVO HET (L72), Zaras (L81). AMERIKAI PIAC is [EXT], not required weekly."},
+    {"id": "B2", "points": 4, "max": 4, "evidence": "L74-77: CSUTORTOK 14:15 ECB, KEDD-SZERDA / szerdan 20:00 FOMC, CSUTORTOK 14:30 GDP+PCE, VASARNAP OPEC+ — weekday+CET present; weekdays verified correct for the dates."},
+    {"id": "B3", "points": 4, "max": 4, "evidence": "FIRST ISSUE — retrospective half structurally N/A and explicitly declared (L3), nothing due was silently dropped. Launch half full on its merits: L79 poll with named band anchors (63 098 konfluencia-tamasz / 66 019 felso Bollinger, tagged), symmetric grading pre-committed ('akkor is, ha tevedunk'), ledger 2026-07-21-13 carries band_definition."},
+    {"id": "B4", "points": 3, "max": 3, "evidence": "Placeholder phase (step C, per skill note). All 6 placeholders' key numbers restated in prose: 66 019 (L45/L65/L70), 70 705 (L41), ETH 1 947 (L47), RSI-kapu 41,32 (L43/L70), +727,0M (L30/L57), +5,8M (L57). Prose survives without charts."},
+    {"id": "B5", "points": 1.5, "max": 3, "evidence": "Length out of band: ~1,450-1,600 words excl. tags vs 700-900 template band; 6 chart placeholders vs 8-11 band. Ending clean (proper Zaras block L81-83), hence half not zero."},
+    {"id": "C1", "points": 6, "max": 6, "evidence": "L16 'A motorhazteto alatt' energy decomposition; L18 participation mechanism behind u-rate; L26 named 5-link chain; L57 'A lanc (masodik rendu lanc): eros dollar -> nem aramlik friss fiat -> a marginalis vevo egyedul az ETF-creation'. Doctrine patterns cited by name throughout."},
+    {"id": "C2", "points": 6, "max": 6, "evidence": "L65 'A divergenciak maguk a sztori' — TA daily vs weekly gate (L43), ETF inflows vs flat stablecoins (L57), price up vs F&G 25 (L59), headline vs core inflation (L26). TA+onchain+flows+macro all cross-checked; divergences ARE the verdict."},
+    {"id": "C3", "points": 4, "max": 4, "evidence": "L43: spring roadmap analogue (kv-2026-03-22) with the disanalogy in the same breath: 'akkor felulrol tesztelve... most alulrol ostromoljuk... A szint ugyanaz, a rezsim nem.' Also L9 Hormuz compensating factors."},
+    {"id": "C4", "points": 4, "max": 4, "evidence": "L26: 'Megj.: az eves inflacios mutato ket vegen tortenik valtozas...' — teaches the base-effect mechanism."},
+    {"id": "D1", "points": 5, "max": 5, "evidence": "L68 bull (ETF streak + FOMC hold + mediation pause -> 66 019 -> 68 227 -> plafon); L69 bear (energy strikes -> Brent -> Aug CPI; single >-300M ETF outflow day -> 63 098 test). Named catalysts both sides."},
+    {"id": "D2", "points": 5, "max": 5, "evidence": "L45: upside proof = close >66 019; veszelyzona = losing 63 098 with ordered supports 62 272 -> 61 017 (below-map gap honestly flagged, next anchor 42 646 cycle-VWAP). L70 'Ez a kep teves, ha...' both directions incl. weekly RSI 41,32 condition."},
+    {"id": "D3", "points": 3, "max": 3, "evidence": "KOCKAZATI KERET box present L67-70 with bull/bear/invalidation."},
+    {"id": "D4", "points": 2, "max": 2, "evidence": "Watch-points and conditionals only ('sávkereskedés' read, no sizing/urgency anywhere); L83 disclaimer with BSZT (2007. evi CXXXVIII. tv.) + MiCA (EU) 2023/1114."},
+    {"id": "E1", "points": 4, "max": 4, "evidence": "13 ledger rows 2026-07-21-01..13, each with deadline + resolution_criteria + own_vs_relayed; claim_verbatim matches report text (spot-verified 01, 02, 08, 10, 13 against L45/L61/L26/L79). All forward-looking prose statements map to a row."},
+    {"id": "E2", "points": 3, "max": 3, "evidence": "Only due call (kv-2026-04-05-02 Schwab, benchmark relayed) graded hit in prose L34 ('Talalat, tovabbitott savban konyvelve') with the honest 'partial defensible' caveat kept in the ledger; no unresolved past-due deadlines remain; benchmark's miss family named aloud L32."},
+    {"id": "E3", "points": 3, "max": 3, "evidence": "FIRST ISSUE — no prior promises exist (vacuously satisfied); new promises explicitly tracked: L61 regime test -> ledger 08, L79 poll grading -> ledger 13."},
+    {"id": "F1", "points": 1.5, "max": 3, "evidence": "Hedging in potential mood present (L26 'lefordulhat/ragadhat'), HUF conversions present (L30, L57), Osszessegeben rhythm present (L12 closer + L65 single clear verdict). MISSING: zero 'Erdekesseg...' formulas and zero rhetorical self-Q&A (grep: 0 matches) — two of the item's named devices absent."},
+    {"id": "F2", "points": 1.5, "max": 3, "evidence": "No typos or agreement errors found, but zero-tolerance proofreading flags systematic nonstandard compound hyphenation vs AkH: 'banyasz-szektor' (L33), 'rekord-kiaramlas' (L30), 'csapas-szunet' (L7), 'nehezseg-igazitas' (L59), 'rezsim-teszt' (L61), 'konfluencia-tamasz' (L41), 'mozgoatlag-blokkal' (L43), 'Balna-kohorsz adat' (L59, mozgoszabaly), 'szuk-keresztmetszet aritmetika' (L9), 'relativero' (L47)."},
+    {"id": "F3", "points": 2, "max": 2, "evidence": "Headers are exactly the weekly template's vocabulary in order (L5..L81), uniform ALL-CAPS with 'Zaras' per template naming — no drift."},
+    {"id": "F4", "points": 2, "max": 2, "evidence": "L30 'Oszinte kontextus... aproenz-kontraszt' deflates the inflow story; L9 Hormuz compensating factors deflate the supply-shock doom; L59 'elhagyatott, nem tulfutott'; bull path kept open while the fragility map (L57) is named. Constructive, risks never minimized."}
+  ],
+  "fixes": [
+    "F2 orthography sweep (our zero-typo differentiator): write solid compounds per AkH — banyaszszektor (L33), rekordkiaramlas (L30), csapasszunet (L7), nehezsegigazitas (L59), rezsimteszt (L61), konfluenciatamasz (L41), mozgoatlagblokk (L43); mozgoszabaly forms: 'balnakohorsz-adat' (L59), 'szukkeresztmetszet-aritmetika' (L9); 'relativ ero' as two words (L47).",
+    "F1 voice devices: add ONE rhetorical self-Q&A ('Mit jelent ez?' after the USDT->USDC rotation, L57) and ONE 'Erdekesseg volt, hogy...' (natural fit: F&G 25 while price rises, L59).",
+    "B5 length: trim toward the 700-900 word band (~40-60% over excl. tags) — compress the Fed-speaker roundup (L20) to a strict name+one-sentence list, merge the two Hormuz compensation figures into one clause (L9), tighten the spring-analogue paragraph (L43).",
+    "B5 chart band: add 2-3 placeholders to reach the template's 8-11 — CPI komponensbontas (MAKRO, key number: energia -5,7%), FedWatch before->after (MAKRO, 43%->13%), Brent (GEOPOLITIKA, 91,42/88,58); all key numbers are already in prose.",
+    "A2 polish: add the prior for core CPI m/m and consensus+prior for core y/y (L16); state the prior unemployment rate next to the 4,2% (L18)."
+  ]
+}
