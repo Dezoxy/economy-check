@@ -178,10 +178,13 @@ def bf_fred(d, cfg, env):
 
 
 def bf_etf_flows(d, cfg):
+    # the /btc/ front page shows only the recent window; the all-data pages hold
+    # the complete daily history back to the 2024 launches
     root = "https://farside.co.uk"
     out = {}
-    btc = [r for r in _parse_table(base.http_get(root + "/btc/"), "btc",
-                                   keep_all=True) if r["date"] <= d]
+    btc = [r for r in _parse_table(
+        base.http_get(root + "/bitcoin-etf-flow-all-data/"), "btc",
+        keep_all=True) if r["date"] <= d]
     if not btc:
         raise base.FetchError("no farside rows at or before %s" % d)
     btc = btc[-10:]
@@ -189,13 +192,14 @@ def bf_etf_flows(d, cfg):
     out["btc_week_total_musd"] = round(sum(r["total_musd"] for r in btc[-5:]), 1)
     out["btc_latest_flow_date"] = btc[-1]["date"]
     try:
-        eth = [r for r in _parse_table(base.http_get(root + "/eth/"), "eth",
-                                       keep_all=True) if r["date"] <= d][-10:]
+        eth = [r for r in _parse_table(
+            base.http_get(root + "/ethereum-etf-flow-all-data/"), "eth",
+            keep_all=True) if r["date"] <= d][-10:]
         out["eth_daily_flows_musd"] = eth
         out["eth_week_total_musd"] = round(sum(r["total_musd"] for r in eth[-5:]), 1)
     except base.FetchError:
         out["eth_daily_flows_musd"] = None
-    return out, root + " (rows <= %s)" % d
+    return out, root + "/*-all-data/ (rows <= %s)" % d
 
 
 def bf_binance_funding(d, cfg):
