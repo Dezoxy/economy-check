@@ -158,6 +158,41 @@ weekly quality is proven, so the daily habit inherits a validated pipeline.
   (the "use his mentality for my own questions" endpoint; build after E proves the pipeline)
 - etf_flows fetcher: emit `prev_week_total_musd` (summed in code) so reports can cite
   the w/w comparison without reasoning-plane arithmetic (fact-checker F4, 2026-07-21)
+- **Editorial rulings die with their sidecar → they regress.** The 03-15 backtest
+  re-introduced three defects the 07-05 issue had settled (ASCII closing quotes,
+  `Tripwire`, `relayed`), because those rulings were recorded only in a `.score.json`
+  no later composing session reads. Action: a "settled terms & typography" section in
+  `style-guide.md` that skill step 1 loads, so decisions bind future runs. Note the
+  editor itself mislabeled `Tripwire` as a restored 07-05 ruling when 07-05 had
+  actually resolved it by deletion — it self-corrected on challenge, but an unchecked
+  "re-apply the precedent" instruction would have entered an invention into the house
+  vocabulary. Found by step-F backtest 2026-03-15.
+- **report_lint.py does not check Hungarian quote pairing.** F2 is a zero-tolerance
+  rubric item, yet 20 opening `„` against 0 closing `”` survived compose + lint and was
+  caught only by the editor grepping by hand — costing the gate a full cycle. A pair
+  check is a few lines and would make the most mechanical F2 defect impossible to ship.
+  **Add a second warn-level check in the same pass: nonstandard two-element hyphenation**
+  (regex over lowercase-hyphen-lowercase tokens, excluding 3+ element compounds over six
+  syllables and anything with a foreign or proper-noun element). The 03-15 run burned
+  two full edit rounds on hand-sampled compound lists that were each presented as closed
+  and each turned out to be a sample — ~25 sites still remained after nine fixes
+  (`makró-ténye`, `dollár-alapú`, `évjárat-műtermék`, `konfluencia-távolságok`, …).
+  A hand-sample is the wrong instrument for a zero-tolerance item; the lint is the right
+  one. Found by step-F backtest 2026-03-15.
+- **quality_gate.py sidecar parse errors are undiagnosable.** Blocked twice in one run
+  with only `char 11702` / `char 14530`; the real cause both times was an editor evidence
+  string quoting report prose whose `„…"` closer terminated the JSON value early. Two
+  fixes, both cheap: have the gate print the offending line's `"id"` and surrounding
+  text, and have the editor emit inner quotes as `„ ”` (or escaped) — the failure mode is
+  structural, since the editor's job is to quote Hungarian into JSON. Found 2026-03-15.
+- **report_lint staleness warnings misfire in backtest mode.** Every run of the 03-15
+  backtest emitted 8 "stale tag — Nd old at publish" warnings measured against *today*,
+  not the as-of date. In a backtest, citing a 2026-03-06 article on 2026-03-15 is exactly
+  correct. The lint should take the report's as-of date as its clock, or skip the check
+  for `reports/backtests/`. Noise that trains the operator to ignore warnings.
+- binance_klines / defillama fetchers: emit derived gap widths (level-to-level spans) and
+  the stablecoin non-USDC/USDT residual, so confluence distances and share splits stop
+  being reasoning-plane arithmetic carrying a bare cache tag (fact-checker F3/F4, 03-15)
 - **Step B/B2 artifacts were derived from a truncated corpus.** The 07-05 backtest found
   and fixed the ingest bug (base64 images exhausted the 700K parse window): 58 of 132
   records recovered a combined 255K chars — mostly post TAILS (BITCOIN closings, polls,
@@ -220,7 +255,7 @@ weekly quality is proven, so the daily habit inherits a validated pipeline.
 | Phase | Job | Status |
 |---|---|---|
 | 0 | foundation | 🟢 built + tested (pending: .env secrets, GitHub push decision) |
-| 1 | crypto-analyst | 🟡 A+B+B2+C+D+E ✅, F 1/3 weeks (2026-07-05 ✅ 87.5 vs KV 47.0) — next: 2 more backtest weeks |
+| 1 | crypto-analyst | 🟡 A+B+B2+C+D+E ✅, F 2/3 weeks (07-05 ✅ 87.5 vs KV 47.0; 03-15 ✅ 84.5 vs KV 67.0 — **KV wins category C 20-17**) — next: 1 more backtest week |
 | 2 | macro-analyst | ⚪ planned |
 | 3 | portfolio-review | ⚪ planned |
 | 4 | daily-pulse | ⚪ planned |
@@ -236,6 +271,33 @@ weekly quality is proven, so the daily habit inherits a validated pipeline.
   flag, 2 more) and passed the re-check; editor scored honestly with itemized evidence.
   Ledger: +13 own calls with deadlines (first due 2026-07-23), Schwab benchmark call
   graded ✅ hit (launched 05-13, verified externally). Delivery awaits TELEGRAM_*/SMTP_*.
+- 2026-07-21 — Phase 1 step F, backtest week 2 of 3 (2026-03-15), resumed after an API
+  drop mid-pipeline (draft existed, no sidecars; restarted at step 5). Report scored
+  **84.5** (A 22.5 / B 15 / C 17 / D 15 / E 8 / F 7); benchmark PDF deep-dive scored
+  **67.0**. NO live-ledger writes, no PDF, no delivery (backtest rules held).
+  **The headline total is misleading and the sidecar says so:** our +17.5 is +12 in
+  category A and +5 in E — the two categories the benchmark is not attempting and cannot
+  structurally reach. On the four contested categories (B+C+D+F) it is 54.0 vs 53.5, a
+  tie. **The benchmark WINS the parity metric, category C, 20 vs 17**, and also wins B
+  (16.5-15). Why: it uses disanalogy as section architecture rather than disclosure,
+  runs four genuine onchain legs (our ONCHAIN section has no onchain data — C2 3/6), and
+  wires one mechanism (Hormuz → crude → inflation → rate curve → BTC) across four
+  sections without repeating it. Two losses are on things we fully control: length
+  (~6,500 words vs their ~1,800, B5 = 0) and calendar clock times (B2 2/4).
+  **Rubric assumption falsified:** known-gap #2 (`rubric.md:63-69`, "benchmark never
+  grades its misses") is wrong for this post — it grades its poll with checkable
+  reasoning and carries a full Bszt + MiCA disclaimer. Do not generalize the gap list
+  from 07-05. **Open rubric question for tom:** category C scored 20/20 with a real
+  weakness present (peripheral index recital, an unchained "US sentiment feeds back into
+  crypto" premise) — the C items don't discriminate at the top of the range. If C is the
+  parity metric, it needs a harder top rung. Rubric untouched by the run, per AGENTS.md.
+  Pipeline notes: fact-checker PASS in 2 rounds (0 block, as-of discipline clean —
+  every citation ≤ 03-15, all 16 HIÁNYZÓ ADAT claims verified as genuinely missing);
+  editor caught a 3-defect regression of rulings settled in 07-05; the Stop gate blocked
+  twice on editor-written sidecars that were invalid JSON. 07-05 (87.5) vs 03-15 (84.5)
+  is **not** a trend — two points, and the delta hides that 03-15 is the stronger
+  sourcing performance (A 90%, A3 4 vs 2) and the weaker editorial one (B5 0 vs 1.5,
+  E1 2 vs 4). Five process findings added to backlog.
 - 2026-07-20 — Phase 1 step D (fetchers): 14 modules + indicators.py (tested math)
   live-run against real APIs; 11/14 green, remaining 3 are key-gated (FRED ×2) or
   policy-fail (FedWatch JS). Cache for 2026-07-20 populated. Fixes en route: VWAP
