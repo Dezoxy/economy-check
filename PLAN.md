@@ -119,14 +119,18 @@ The KriptoVadász replacement. Benchmark corpus: 132 posts (Jan 2025 + Dec 2025 
       (residue: length over band, missing Érdekesség/self-Q&A voice devices, hyphenation
       sweep — fixes queued in the score sidecar for issue #2). Delivery pending channel
       secrets (TELEGRAM_*/SMTP_ in .env).
-- [ ] **F. Backtest** — 1 of 2–3 weeks done (2026-07-05 crash week, as-of cache
-      anchor-validated): ours **87.5** vs benchmark **47.0** on the full rubric, but the
-      honest parity metric is category C (untouched by our designed benchmark-gap items):
-      **17 vs 14** — a real but modest analytical edge. The run also found and fixed a
-      corpus-truncation bug (base64 images exhausted the parse window; 58/132 records
-      re-extracted, +255K chars — incl. the scored KV post's missing tail). Remaining:
-      2 more weeks (one PDF-era Feb–Mar week, one calmer May week) + the backlog
-      infrastructure points (+~11 pts ceiling), then the parity verdict.
+- [x] **F. Backtest** — 3 of 3 weeks done. Full-rubric totals ours vs benchmark:
+      07-05 **87.5**/47.0, 03-15 **84.5**/67.0, 05-17 **93.0**/35.5.
+      **Parity metric (category C, the only section no benchmark-gap item touches):
+      ours 17 / 17 / 17, theirs 14 / 20 / 8 — we win two of three, average 17.0 vs 14.0.**
+      The verdict is "we clear the bar on average, and the benchmark is wildly
+      non-uniform" — its C ranges 8 to 20 across three posts, so no single week
+      supports a general claim in either direction. Our own C is flat at 17 all three
+      weeks, and the blocker is the same every time: the ONCHAIN section has no onchain
+      data (C2 = 3/6 in all three). **That single infrastructure gap is the whole
+      remaining analytical delta** — see the coingecko/mempool/OI backlog item.
+      Step F also paid for itself in bugs found: the corpus-truncation fix (07-05),
+      five process findings (03-15), and a falsified rubric arithmetic claim (05-17).
 - [ ] **G. Operate** — Sunday 18:00 weekly run; FOMC/CPI event-notes triggered from econ calendar; Telegram + email; score trend + ledger review monthly
 
 **Report cadence target:** weekly flagship + event-driven notes; expansion after F passes.
@@ -185,11 +189,39 @@ weekly quality is proven, so the daily habit inherits a validated pipeline.
   fixes, both cheap: have the gate print the offending line's `"id"` and surrounding
   text, and have the editor emit inner quotes as `„ ”` (or escaped) — the failure mode is
   structural, since the editor's job is to quote Hungarian into JSON. Found 2026-03-15.
-- **report_lint staleness warnings misfire in backtest mode.** Every run of the 03-15
-  backtest emitted 8 "stale tag — Nd old at publish" warnings measured against *today*,
-  not the as-of date. In a backtest, citing a 2026-03-06 article on 2026-03-15 is exactly
-  correct. The lint should take the report's as-of date as its clock, or skip the check
-  for `reports/backtests/`. Noise that trains the operator to ignore warnings.
+- ~~**report_lint staleness warnings misfire in backtest mode.**~~ **FIXED** — verified
+  2026-07-21 during the 05-17 backtest: `report_lint.py:163-169` now derives the freshness
+  reference date from the report filename, falling back to today only when the filename
+  carries no parseable date. Backtest staleness warnings are now correct and actionable
+  (the 05-17 run's warnings were all genuine and were labeled in prose).
+- **The compound-hyphenation sweep needs a capitalised first element.** The 05-17 run
+  used `[a-z]{3,}-[a-z]{3,}` and reported clean; the editor then found two survivors
+  (`Sávhatár-szabály`, `Motorháztető-elv`) that the regex *structurally could not see*
+  because sentence position or bold markup capitalises the first element. This is the
+  same failure mode as the 03-15 hand-sampling item one level up: an instrument that
+  reports clean because it cannot see the defect class. When the F2 pair check goes into
+  `report_lint.py`, the hyphenation half must allow `[A-ZÁÉÍÓÖŐÚÜŰ]?` on the first element.
+- **Settled terms & typography (the style-guide section 03-15 asked for — seed it with
+  these).** Rulings made and applied in the 05-17 run, currently recorded only in a
+  sidecar and therefore at risk of regressing again: solid `motorháztetőelv`,
+  `retorikadiszkont`, `sávhatárszabály`, `konfluenciaszabály` (AkH 139 — hyphen only
+  *above* six syllables, so exactly-six compounds are solid); hyphen retained only for
+  proper-noun (`Bollinger-középvonal`, AkH 168) and unassimilated foreign
+  (`chokepoint-aritmetika`, AkH 138) elements. Use `adatközlés`, never `nyomtatás`, for
+  a data release — the calque reads as physical printing in Hungarian. Open for tom:
+  pick one house term for `bérpapír` vs `payroll` across the series.
+- **Spurious subject–predicate comma appears in all three benchmark posts scored** and
+  has crept into ours. Warrants a one-line house style rule rather than a per-run fix.
+- **The "known benchmark gaps" item list does not sum to 34.5.** Both prior sidecars
+  quote 34.5 pts for A1/A6/B3/D3/D4/E1–E3/F2; the 05-17 editor recomputed 30 and recorded
+  the discrepancy rather than inheriting it. Since this number is the load-bearing caveat
+  on every parity claim we make, resolve it with tom before the figure is quoted again.
+- **B5 length is now structural, not stylistic.** The 05-17 report hit ~3,500 words
+  against a 700–900 band even after deliberate tightening, and ~580 of those words are
+  the prediction table alone, because machine-checkable resolution criteria are written
+  as prose inside table cells. The benchmark clears this band at ~950 words. Either the
+  template's band is wrong for a report carrying our accountability apparatus, or the
+  apparatus needs a compact notation — a decision for tom, not another editor round.
 - binance_klines / defillama fetchers: emit derived gap widths (level-to-level spans) and
   the stablecoin non-USDC/USDT residual, so confluence distances and share splits stop
   being reasoning-plane arithmetic carrying a bare cache tag (fact-checker F3/F4, 03-15)
@@ -255,13 +287,40 @@ weekly quality is proven, so the daily habit inherits a validated pipeline.
 | Phase | Job | Status |
 |---|---|---|
 | 0 | foundation | 🟢 built + tested (pending: .env secrets, GitHub push decision) |
-| 1 | crypto-analyst | 🟡 A+B+B2+C+D+E ✅, F 2/3 weeks (07-05 ✅ 87.5 vs KV 47.0; 03-15 ✅ 84.5 vs KV 67.0 — **KV wins category C 20-17**) — next: 1 more backtest week |
+| 1 | crypto-analyst | 🟢 A+B+B2+C+D+E+F ✅ (F 3/3: 87.5/47.0, 84.5/67.0, 93.0/35.5; **category C avg 17.0 vs 14.0 — bar cleared**) — next: step G (schedule + delivery + monitoring) |
 | 2 | macro-analyst | ⚪ planned |
 | 3 | portfolio-review | ⚪ planned |
 | 4 | daily-pulse | ⚪ planned |
 
 ## Changelog
 
+- 2026-07-21 — Phase 1 step F **complete**, backtest week 3 of 3 (2026-05-17, a grinding
+  deterioration week: BTC rejected at a four-tool 81 782,66–82 981,80 confluence band and
+  sitting on its 150-day MA, ETH's weekly close below its 200-week MA, CPI re-accelerating
+  3,29→3,78% while payrolls halved 185k→115k, ~1 Mrd USD of BTC ETF outflow against flat
+  funding). Ours **93.0** (A 22.5 / B 18.5 / C 17 / D 15 / E 10 / F 10) — our best of the
+  three. Benchmark weekly update scored **35.5**. NO live-ledger writes (67 records
+  unchanged), no PDF, no delivery — backtest rules held.
+  **Category C, the honest parity metric: ours 17 vs theirs 8 — reversing the 03-15 loss
+  and closing step F at 17.0 vs 14.0 on average across the three weeks.** The benchmark's
+  C of 8 / 14 / 20 across three posts is the real headline: the corpus is non-uniform, and
+  any single-week parity claim (in either direction) is noise. Ours is flat at 17 all
+  three weeks, blocked every time by the same thing — C2 = 3/6, because the ONCHAIN
+  section has no onchain data. That is now the entire remaining analytical gap.
+  Two places the benchmark genuinely beat us, recorded without softening: it clears the
+  700–900 word band at ~950 words where we ran ~3,500, and it ran four triangulation legs
+  (whale cohorts, per-asset ETF reserves across BTC/ETH/SOL/XRP, a per-issuer Morgan
+  Stanley line, macro) to our two. Both are data-plane gaps on our side, not writing.
+  Pipeline notes: fact-checker took **seven rounds** to PASS (18 → 11 → 15 → 6 → 3 → 1 → 0
+  findings), the most adversarial run of the series and the most valuable — it caught an
+  inverted ETH VWAP relation, a Strategy cost-basis level described two contradictory ways
+  in two sections, a load-bearing CPI-internals claim tagged to `bls.gov` that the registry
+  itself says is unfetchable (an AGENTS.md reproducibility violation), a KOMMENTÁR argument
+  resting on a yield move that postdated the print it claimed to explain, and a prediction
+  row that survived **four** rewrites before it could actually fail. The editor then caught
+  that our own compound sweep was structurally blind to capitalised first elements, and
+  recomputed the long-quoted "34.5 pts of known-gap items" as 30. Six process findings
+  added to backlog; one prior backlog item (backtest staleness warnings) verified fixed.
 - 2026-07-20 — Plan created. Phase 0 partially done (.gitignore, ingest script, folder layout). Phase 1 step A complete: 132-post corpus extracted on-device to `crypto-analyst/corpus/corpus.jsonl`.
 - 2026-07-20 — Phase 1 step B complete (in Cowork): 4 parallel agents analyzed the full corpus (flagship weeklies+PDFs, 52 event notes, summaries/alt/onchain, predictions). 7 foundation artifacts written to `crypto-analyst/templates/`. Handoff: continue in Claude Code with Phase 0 scaffold + Phase 1 step C ("Read PLAN.md and continue with the current phase").
 - 2026-07-21 — Phase 1 step E: first real weekly report through the full gate, 95.5/100.
