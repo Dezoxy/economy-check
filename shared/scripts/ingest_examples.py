@@ -38,6 +38,11 @@ class ContentParser(HTMLParser):
 
 def extract_html(path):
     h=open(path,encoding='utf-8',errors='ignore').read()
+    # Inline base64 images carry no text but are huge (often >500KB each). Left in
+    # place they exhaust the fixed feed window below, silently truncating the post
+    # at the first such image — which cost us 120 of 132 bodies until step F caught
+    # it. Strip the payload, keep the tag so the image COUNT stays right.
+    h=re.sub(r'data:[a-z/+.-]*;base64,[A-Za-z0-9+/=\s]+', 'data:stripped', h)
     rec={'file':os.path.basename(path),'kind':'html'}
     m=re.search(r'"datePublished":"([^"]+)"',h); rec['date']=m.group(1)[:10] if m else None
     m=re.search(r'patreon\.com/kriptovadasz/posts/([a-zA-Z0-9\-]+)',h); rec['slug']=m.group(1) if m else None

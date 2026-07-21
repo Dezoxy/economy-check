@@ -119,7 +119,14 @@ The KriptoVadász replacement. Benchmark corpus: 132 posts (Jan 2025 + Dec 2025 
       (residue: length over band, missing Érdekesség/self-Q&A voice devices, hyphenation
       sweep — fixes queued in the score sidecar for issue #2). Delivery pending channel
       secrets (TELEGRAM_*/SMTP_ in .env).
-- [ ] **F. Backtest** — regenerate 2–3 past weeks (as-of data from cache/corpus dates), rubric-score vs the real KV weeklies, iterate skills until ≥ parity
+- [ ] **F. Backtest** — 1 of 2–3 weeks done (2026-07-05 crash week, as-of cache
+      anchor-validated): ours **87.5** vs benchmark **47.0** on the full rubric, but the
+      honest parity metric is category C (untouched by our designed benchmark-gap items):
+      **17 vs 14** — a real but modest analytical edge. The run also found and fixed a
+      corpus-truncation bug (base64 images exhausted the parse window; 58/132 records
+      re-extracted, +255K chars — incl. the scored KV post's missing tail). Remaining:
+      2 more weeks (one PDF-era Feb–Mar week, one calmer May week) + the backlog
+      infrastructure points (+~11 pts ceiling), then the parity verdict.
 - [ ] **G. Operate** — Sunday 18:00 weekly run; FOMC/CPI event-notes triggered from econ calendar; Telegram + email; score trend + ledger review monthly
 
 **Report cadence target:** weekly flagship + event-driven notes; expansion after F passes.
@@ -151,6 +158,54 @@ weekly quality is proven, so the daily habit inherits a validated pipeline.
   (the "use his mentality for my own questions" endpoint; build after E proves the pipeline)
 - etf_flows fetcher: emit `prev_week_total_musd` (summed in code) so reports can cite
   the w/w comparison without reasoning-plane arithmetic (fact-checker F4, 2026-07-21)
+- **Step B/B2 artifacts were derived from a truncated corpus.** The 07-05 backtest found
+  and fixed the ingest bug (base64 images exhausted the 700K parse window): 58 of 132
+  records recovered a combined 255K chars — mostly post TAILS (BITCOIN closings, polls,
+  disclaimers, exactly the template-critical sections). Templates, rubric, and the
+  doctrine were mined from the truncated text. Action (with tom): a delta-pass over the
+  recovered text to check for missed patterns/ritual formulas before step F concludes.
+- **net_allowlist.py does not gate WebSearch** — `extract_hosts()` handles WebFetch and
+  Bash only, so analysts can cite any domain reached via search while the hook stays
+  silent. Both the 07-21 live report (axios/cnn/cnbc/kslaw) and the 07-05 backtest
+  (aljazeera/cnbc/cnn/fortune/worldoil) shipped tags for unregistered domains. Decide:
+  extend the hook to WebSearch results, or register a small vetted news tier
+  (reuters/apnews are registered but block the crawler — that is the reason analysts
+  drift to unregistered outlets). Found by step-F backtest 2026-07-05.
+- **Geopolitics has no usable registered source.** reuters.com and apnews.com are in
+  `extra_allowed_domains` but refuse the fetcher (HTTP 400 / robots), so the
+  VILÁG/GEOPOLITIKA section has no primary wire in any run. Needs either a working wire
+  source or an explicit "geo runs on cache + declared gaps" policy.
+- Oil/energy + chokepoint data has no registered source at all (no Brent/WTI level, no
+  tanker-transit series) — doctrine patterns 26/27 cannot be run on sourced numbers.
+  Candidate: EIA or a FRED oil series (DCOILBRENTEU) — cheap, registry-clean.
+- **Backtest hazard: live ticker widgets.** Fetching an archived article returns
+  price widgets rendered at fetch time, not publication time (07-05 run: a "$66,423"
+  and a "$66,313.26" both leaked from 06-29/07-03 pages). Analysts caught these, but
+  the rule belongs in the agent briefs: in backtests, prices come from cache ONLY.
+- econ_calendar carries dates without release times, so the weekly calendar cannot
+  give the rubric's "weekday + CET time" without inventing the clock (rubric B-4 point
+  forfeited honestly in the 07-05 backtest). Add times to the fetcher.
+- **rubric.md:68 is half-falsified.** "No alt depth (ETH had no dedicated TA) → we add
+  an ETH block + TOTAL3" — the 2026-07-05 benchmark post carries genuine weekly TOTAL3
+  TA (200w MA, February low, RSI, trend structure). The TOTAL3 half of that claim is
+  false and should stop being advertised as our differentiator; the ETH half survives
+  (ETH appears only as a stagnant reserve line). Rubric revision, made with tom.
+- **Parity metric needs rethinking.** Rubric items A1/A6/B3/D3/D4/E1–E3/F2 total 34.5
+  pts and ARE the six "known benchmark gaps we must BEAT" (rubric.md:63-69) — the rubric
+  was written from this corpus. Scoring the benchmark with it grades them on an exam
+  written from their own marked-up essay. Category C (depth/mechanism) is the only
+  section no benchmark-gap item touches: ours 17 vs theirs 14. Treat C (or C+D1/D2) as
+  the real analytical parity metric, the full total as a compliance metric.
+- scores.jsonl has no way to distinguish our reports from benchmark scores, and no
+  revision field — a benchmark row would pollute the 3-report-decline trend monitor,
+  and a re-scored report either double-counts or loses its audit trail. Add a
+  `kind`/`revision` discriminator before the parity series grows.
+- Template gaps found by the 07-05 parity run: sector rotation is `[EXT]`-only but
+  carried a weekly thesis in the benchmark (promote to weekly); no slot for a
+  methodology-limits caveat ("rotation makes index TA unreliable"); MAKRÓ is US-only
+  so Eurozone CPI/ECB has nowhere to go (real gap for an EU reader); earnings horizon
+  is one week only; no standing commodity slot (oil only lives under geopolitics); no
+  trading-calendar/holiday note slot.
 - AMERIKAI PIAC [EXT] section needs an owner (macro-analyst is natural) + an equity
   index source (stooq or FRED SP500) + earnings-calendar policy before first monthly
 - Bash-level curl allowlisting is best-effort by design (exotic quoting can evade);
@@ -165,7 +220,7 @@ weekly quality is proven, so the daily habit inherits a validated pipeline.
 | Phase | Job | Status |
 |---|---|---|
 | 0 | foundation | 🟢 built + tested (pending: .env secrets, GitHub push decision) |
-| 1 | crypto-analyst | 🟡 A+B+B2+C+D+E ✅ — next: F (backtest 2–3 weeks, incl. one Apr–Jul week) |
+| 1 | crypto-analyst | 🟡 A+B+B2+C+D+E ✅, F 1/3 weeks (2026-07-05 ✅ 87.5 vs KV 47.0) — next: 2 more backtest weeks |
 | 2 | macro-analyst | ⚪ planned |
 | 3 | portfolio-review | ⚪ planned |
 | 4 | daily-pulse | ⚪ planned |
@@ -175,6 +230,7 @@ weekly quality is proven, so the daily habit inherits a validated pipeline.
 - 2026-07-20 — Plan created. Phase 0 partially done (.gitignore, ingest script, folder layout). Phase 1 step A complete: 132-post corpus extracted on-device to `crypto-analyst/corpus/corpus.jsonl`.
 - 2026-07-20 — Phase 1 step B complete (in Cowork): 4 parallel agents analyzed the full corpus (flagship weeklies+PDFs, 52 event notes, summaries/alt/onchain, predictions). 7 foundation artifacts written to `crypto-analyst/templates/`. Handoff: continue in Claude Code with Phase 0 scaffold + Phase 1 step C ("Read PLAN.md and continue with the current phase").
 - 2026-07-21 — Phase 1 step E: first real weekly report through the full gate, 95.5/100.
+- 2026-07-21 — Phase 1 step F, backtest week 1 of 3 (2026-07-05). Report scored **87.5** (A 20.5 / B 16.5 / C 17 / D 15 / E 10 / F 8.5) after 4 adversarial fact-check rounds + 2 editor passes; benchmark post scored **47.0** with the same rubric. NO live-ledger writes (backtest rule held; ledger unchanged at 67 records). Honest caveat: 34.5 of the 40.5-pt gap sits in rubric items that ARE the enumerated "benchmark gaps we must beat" — category C (ours 17 vs 14) is the only uncontaminated analytical comparison. **Bug fixed mid-run:** `ingest_examples.py` fed the parser a fixed 700k-char window, so a single inline base64 image truncated the post body — 120 of 132 corpus records were at risk, and the 07-05 benchmark record was cut mid-BITCOIN-section. Base64 payloads are now stripped before the feed; both shards re-extracted, corpus re-merged (132 records, 998,256 chars). Corpus scoring before this fix would have been ~30 pts of artifact against the benchmark.
   Pipeline behaved as designed: lint blocked one naked number mid-compose; fact-checker
   failed the first pass (weekday error, ledger claim_verbatim integrity, derived-sum
   flag, 2 more) and passed the re-check; editor scored honestly with itemized evidence.

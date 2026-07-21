@@ -1,0 +1,74 @@
+{
+  "report": "crypto-analyst/corpus/corpus.jsonl#date=2026-07-05,slug=heti-piaci-162986203",
+  "scored_at": "2026-07-21T16:40:00Z",
+  "rubric": "crypto-analyst/templates/rubric.md",
+  "kind": "benchmark_backtest",
+  "note": "External benchmark (KriptoVadász) scored with OUR rubric for step-F parity. NOT appended to reports/scores.jsonl — benchmark rows would pollute the internal trend monitor. Source is text-only extraction (25 images not scored); chart-borne content is therefore scored on prose-survivability, which is the intended standard per style-guide delta #4.",
+  "total": 47,
+  "categories": {
+    "A_data_sourcing":   {"score": 13,  "max": 25},
+    "B_coverage":        {"score": 8,   "max": 20},
+    "C_depth_mechanism": {"score": 14,  "max": 20},
+    "D_balance_risk":    {"score": 7.5, "max": 15},
+    "E_accountability":  {"score": 0,   "max": 10},
+    "F_voice_language":  {"score": 4.5, "max": 10}
+  },
+  "total_excluding_A": 34,
+  "max_excluding_A": 75,
+  "comparison": {
+    "ours_2026_07_05_equivalent_total": 87.5,
+    "ours_excluding_A": 67,
+    "gap_total": 40.5,
+    "gap_attributable_to_A": 7.5,
+    "gap_not_attributable_to_A": 33,
+    "C_only_ours": 17,
+    "C_only_theirs": 14,
+    "caveat": "Rubric items A1, A6, B3, D3, D4, E1-E3 and F2 (34.5 pts) are by construction the six 'known benchmark gaps we must BEAT' in rubric.md:63-69. The headline gap therefore overstates analytical superiority. Category C is the least adversarial comparison: 17 vs 14."
+  },
+  "items": [
+    {"id": "A1", "points": 0,   "max": 5, "evidence": "MISSING — zero [src:] tags in the entire body. Every figure naked: '58 189 dollárig esett', 'kb. -4,5 milliárd dollár', '2,73 milliárd dolláros kiáramlási sorozat', '223,5 milliós beáramlási nap'."},
+    {"id": "A2", "points": 5,   "max": 5, "evidence": "'A \"nem mezőgazdasági fogalkoztatottak száma\" mindössze 57 ezerrel nőtt (vs. 113-115 ezres konszenzus), az április-májusi adatokat pedig összesen 74 ezerrel revideálták lefelé.' + ISM: '53,3 pont, a májusi 54,0-ról és a 54-es várakozásról lefelé'. Actual/consensus/prior/revisions all present on the week's key prints. Partial gap noted: ADP ('98 ezer ... a vártnál gyengébben') and EZ CPI carry qualitative rather than numeric consensus."},
+    {"id": "A3", "points": 4,   "max": 4, "evidence": "'A CME FedWatch szerint a júliusi kamatemelés valószínűsége kb. 29%-ról 21%-ra esett' + GDPNow 'a májusi 4% fölötti szintről, mostanra rég nem látott 1,2%-ra süllyed'. Textbook before→after on both."},
+    {"id": "A4", "points": 2,   "max": 4, "evidence": "HALF — relative dating only ('csütörtökön', 'július 2-án', 'a 29-i hétkezdéshez képest'), all within-week. Trading-calendar gap is correctly flagged: '(pénteken pedig zárva voltak a piacok)'. But no T+1 labeling of ETF flows and no freshness statement on the whale-cohort or reserve data."},
+    {"id": "A5", "points": 2,   "max": 4, "evidence": "HALF — named: 'Vance alelnök szerint', 'A CME FedWatch szerint', 'Warsh, Fed-elnök', ISM respondent commentary. But the exact anti-pattern appears twice: 'A hírek szerint, a szoroson a forgalom napi 30+ hajóval stabilizálódott' and 'a beszámolók szerint, az OPEC+ újabb olajkitermelés-növelést készül jóváhagyni'."},
+    {"id": "A6", "points": 0,   "max": 3, "evidence": "MISSING — whale-cohort counts, per-asset ETF reserve changes and the POC/'fair érték' zone are stated without provenance or confidence labeling. No proxy substitution is disclosed anywhere."},
+
+    {"id": "B1", "points": 3,   "max": 6, "evidence": "HALF — present and in order: geopolitics, macro, crypto/corporate news, BITCOIN, ONCHAIN, BÁLNA MOZGÁSOK, US market, TOTAL3, earnings outlook. Missing entirely: final ÖSSZESSÉGÉBEN synthesis, KOCKÁZATI KERET, closing disclaimer block, and a labeled JÖVŐ HÉT section."},
+    {"id": "B2", "points": 2,   "max": 4, "evidence": "HALF — 'a Pepsi csütörtökön, a Delta Air Lines pénteken jelent' plus a named next-next-week bank slate (JPMorgan, Goldman Sachs, Bank of America, Citigroup, Wells Fargo). Weekdays yes; no CET times, and no macro-print calendar at all."},
+    {"id": "B3", "points": 0,   "max": 4, "evidence": "MISSING — confirmed against the full body: no prior-poll grading, no new poll, no band anchors. The word 'szavazás' does not occur."},
+    {"id": "B4", "points": 1.5, "max": 3, "evidence": "HALF — colon-then-chart convention used consistently, and some numbers restated ('A technológiai szektor -9%-os kiáramlása mellett az egészségügyi szektor 13%-al teljesített felül'). But charts are load-bearing in many places: 'Az ETH ETF alapok mögötti készletváltozás ... stagnált:', 'A SOL alapok mögötti készlet szintén stagnált:', 'A legnagyobb romlás pedig a NASDAQ tech. szektorban mutatkozott:', 'a DOW JONES ipari index új történelmi csúcsot ütött:' — no figures in prose."},
+    {"id": "B5", "points": 1.5, "max": 3, "evidence": "HALF — 10 644 chars / ~1 500 HU words, above the 700–900 band. Ending is abrupt by our standard: the post stops on '...utána pedig hetekig meghatározó nagyvállalati jelentések érkeznek majd.' with no synthesis, no verdict and no closing block."},
+
+    {"id": "C1", "points": 6,   "max": 6, "evidence": "'a GDPNow azért esett nagyot, mert a friss adatok alapján a modell sokkal gyengébb nettó exportot és rosszabb készlet-hozzájárulást épített be ... az import levonódik, így ez gyorsan lehúzta a növekedési becslést' → dollar-strength → importer purchasing power. Also the 4,2% unemployment mechanism: 'A háttérben azonban a munkaerőpiaci részvételi arány visszaesése állt'. No asserted effect without its causal chain."},
+    {"id": "C2", "points": 6,   "max": 6, "evidence": "Divergences surfaced as the finding, not smoothed: 'a hangulat romlás mögött nem a makroadatok álltak elsősorban ... hanem a tech. szektorban jelentkező profitrealizálási hullám, miközben a kockázatvállalás a helyén maradt, ugyanis a DOW JONES új csúcsot állított fel.' Plus crypto-ETF reserves stable against tech pressure, and a split whale ladder (1+ up, 10+/100+ down)."},
+    {"id": "C3", "points": 0,   "max": 4, "evidence": "MISSING — reference points only ('21 havi mélypont', 'a február végi ... szintre', 'május vége óta'), never an analogue carrying its honest difference. No 'this time differs because' anywhere."},
+    {"id": "C4", "points": 2,   "max": 4, "evidence": "HALF — one aside present: 'Megj.: Az 1 000+os tárcák április óta magasabbra törtek...' but it recaps data rather than teaching a mechanism. The genuine mechanism teaching (GDP identity, participation rate) sits in body prose, not in a Megj.: aside."},
+
+    {"id": "D1", "points": 2.5, "max": 5, "evidence": "HALF — bull side: 'a következő hét a mai állás szerint már \"kioldalazással indulhat\"' + retail/whale accumulation. Bear side: 'a szélesebb csökkenő trendstruktúra technikailag érvényben van' + AI valuation de-rating + TOTAL3 'egy erős trend alatt van'. Both directions exist but neither is built as a named-catalyst scenario tree."},
+    {"id": "D2", "points": 2.5, "max": 5, "evidence": "HALF — upside proof level exact and explicit: 'a 66 600 dollár körüli \"fair érték\" zóna (fekete POC-sáv) ... Amíg tehát ez alatt marad az árfolyam, a szélesebb csökkenő trendstruktúra technikailag érvényben van.' Downside side fails: 'kulcstámasz' is referenced only as the dashed February low with no dollar level, and there is no ordered support ladder."},
+    {"id": "D3", "points": 1.5, "max": 3, "evidence": "HALF — no KOCKÁZATI KERET box. Anti-panic machinery is present in substance: 'A híradások címeiben ez újra felébresztette a \"stagflációs fenyegetések hangját\", érdemes azonban az adatok mögé nézni.'"},
+    {"id": "D4", "points": 1,   "max": 2, "evidence": "HALF — no advice framing anywhere; the register stays observational/conditional throughout. But no disclaimer block, no 'edukációs célból', no BSZT/MiCA reference. Confirmed against the full body."},
+
+    {"id": "E1", "points": 0,   "max": 4, "evidence": "MISSING — forward-looking statements are made ('kioldalazással indulhat', 'hozzájárulhat az olajárak további rendeződéséhez', 'az EKB-nak adhat mozgásteret a kamatpályával kapcsolatban') with no ledger, no deadline, no resolution criteria, no own_vs_relayed."},
+    {"id": "E2", "points": 0,   "max": 3, "evidence": "MISSING — no prior call graded, no miss acknowledged. The only continuity gesture is 'Az import növekedés mögötti hatásról és a dollár erősödés összefüggéséről már sokszor beszéltünk', which references past coverage without grading it."},
+    {"id": "E3", "points": 0,   "max": 3, "evidence": "MISSING — no prior promise closed and no trackable promise made. The forward gesture 'a mostani után következő hét lesz majd az, ahol nagyobb nevekkel lehet találkozni' carries no tracking commitment."},
+
+    {"id": "F1", "points": 1.5, "max": 3, "evidence": "HALF — ritual opening verbatim ('Kedves KriptoVadász VIP Közösség, / Megnézzük a hét történéseit...'), five 'Összességében' section closers, 'Érdekesség volt, hogy a Nasdaq nagyobb visszahúzódást mutatott...', consistent potential mood ('kedvezhetett', 'adhat mozgásteret', 'vethetne véget'). Missing: no rhetorical self-Q&A, and zero HUF conversions on any large figure (-4,5 milliárd dollár, 2,73 milliárd, 223,5 millió all unconverted)."},
+    {"id": "F2", "points": 0,   "max": 3, "evidence": "ZERO-TOLERANCE FAIL — 12 defects: 'amely53,3 pont' (word merge); 'sokkal gyengébbnettó exportot' (word merge); 'fogalkoztatottak' → foglalkoztatottak; '13%-al' → 13%-kal; 'mint a 200 hetes mozgóátlagot, mind pedig' → mind...mind; 'A hét fő tanulság a tehát az volt' (stray article); 'enyhe emelkedést mutatott\".' (stray quote); 'díjszedésben érdekelt.- Washington' (punctuation artifact); 'A hírek szerint, a szoroson' and 'a beszámolók szerint, az OPEC+' (spurious comma); 'Ai fronton' → AI; 'prices Index' (untranslated/miscased); '1 000+os' / '10 000 plusszos' (inconsistent suffixation)."},
+    {"id": "F3", "points": 1,   "max": 2, "evidence": "HALF — only three headers exist ('## BITCOIN:', '## ONCHAIN:', '## BÁLNA MOZGÁSOK:'), mutually consistent but colon-suffixed and outside our fixed vocabulary. Six sections (geopolitics, macro, crypto news, US market, TOTAL3, earnings) are entirely unlabeled — exactly the 'unlabeled drift' style-guide:52 names."},
+    {"id": "F4", "points": 2,   "max": 2, "evidence": "Doom deflated by mechanism rather than hype ('érdemes azonban az adatok mögé nézni'), balancing formula present ('pozitívum volt annak ellenére, hogy a technológiai szektorban nehézségek mutatkoztak'), and risks are stated plainly, not minimized: 'a Bitcoin spot ETF-ek júniusa minden idők leggyengébb hónapja lett' and '21 havi mélypont'."}
+  ],
+  "fixes": [
+    "Add [src:provider/date] tags to every figure (A1, 5 pts) — the single largest recoverable item and a pure mechanical pass.",
+    "Add the accountability layer: ledger entries with deadline + resolution criteria for the four forward-looking statements, and grade the prior week's calls including misses (E1-E3, 10 pts — currently a total zero and the biggest category hole).",
+    "Restore the poll loop: grade last week's poll symmetrically and open a new one with band anchors named to levels (B3, 4 pts).",
+    "Add a KOCKÁZATI KERET box and a closing disclaimer block with BSZT + MiCA reference (D3+D4, 2.5 pts).",
+    "Give the downside an exact dollar level and an ordered support ladder (Z1→Z2→Z3) to match the already-exact 66 600 upside proof level (D2, 2.5 pts).",
+    "Proofread pass on the 12 listed Hungarian defects (F2, 3 pts) — all are mechanical.",
+    "Restate every chart's key number in prose for the ETH/SOL/XRP/HYPE reserve lines and the NASDAQ/DOW moves (B4, 1.5 pts).",
+    "Close with an ÖSSZESSÉGÉBEN synthesis verdict instead of ending on the earnings paragraph (B1+B5, 4.5 pts).",
+    "Label ETF flows as T+1 and the whale/reserve data with proxy confidence (A4+A6, 5 pts).",
+    "Attach the honest difference to at least one historical analogue (C3, 4 pts).",
+    "Add HUF conversions to the large dollar figures and one rhetorical self-Q&A (F1, 1.5 pts)."
+  ]
+}
