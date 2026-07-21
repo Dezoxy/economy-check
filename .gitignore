@@ -3,6 +3,9 @@ data/cache/
 data/logs/
 data/.gate_state.json
 .env
+# derived delivery artifacts (regenerable via shared/delivery/render_pdf.py)
+*/reports/**/*.pdf
+*/reports/**/*.html
 .DS_Store
 __pycache__/
 *.pyc

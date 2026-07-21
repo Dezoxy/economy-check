@@ -98,7 +98,14 @@ returns fixes. If gate fails (total < 80 or category < 60%): apply fixes, go bac
 to Step 5 (fact-check again after content changes), re-score. The Stop-hook
 quality gate enforces this loop — you cannot finish with a failing report.
 
-## Step 7 — Deliver
+## Step 7 — Render PDF + deliver
+
+First render the delivery artifact:
+```
+python3 shared/delivery/render_pdf.py RPT
+```
+(PDF lands next to the .md; if Chrome is unavailable the .md is delivered instead —
+note it in the wrap-up, don't block.)
 
 - Interactive session: show the score + a 3-line summary, then ASK whether to
   deliver. On yes: `python3 shared/delivery/deliver.py --report RPT`.

@@ -82,4 +82,8 @@ then
     exit 1
 fi
 
+# 5. Delivery artifact: render the PDF (non-fatal — deliver.py falls back to .md).
+python3 "$ROOT/shared/delivery/render_pdf.py" "$RPT" >>"$LOG" 2>&1 \
+    || echo "PDF render skipped (see $LOG)" | tee -a "$LOG"
+
 echo "=== done: $JOB/$REPORT_TYPE @ $RUN_DATE ===" | tee -a "$LOG"

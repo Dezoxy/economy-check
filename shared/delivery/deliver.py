@@ -84,24 +84,29 @@ def main():
             sys.exit(1)
         caption = "[GATE OVERRIDE: %s] %s" % (msg, caption)
 
+    # The delivery artifact is the PDF when it exists (render_pdf.py output);
+    # the gate always runs on the .md + sidecar above.
+    pdf_path = re.sub(r"\.md$", "", path) + ".pdf"
+    artifact = pdf_path if os.path.exists(pdf_path) else path
+
     if args.dry_run:
         print("[dry-run] would deliver %s via %s — %s" %
-              (os.path.basename(path), "+".join(channels), msg))
+              (os.path.basename(artifact), "+".join(channels), msg))
         return
 
     failures = []
     if "telegram" in channels:
         try:
-            telegram.send_document(env, path, caption=caption)
-            print("telegram: delivered")
+            telegram.send_document(env, artifact, caption=caption)
+            print("telegram: delivered %s" % os.path.basename(artifact))
         except Exception as e:
             failures.append("telegram: %s" % e)
     if "email" in channels:
         try:
             with open(path, encoding="utf-8") as f:
                 body = f.read()
-            emailer.send_report(env, caption, body, attachments=[path])
-            print("email: delivered")
+            emailer.send_report(env, caption, body, attachments=[artifact])
+            print("email: delivered %s" % os.path.basename(artifact))
         except Exception as e:
             failures.append("email: %s" % e)
 
