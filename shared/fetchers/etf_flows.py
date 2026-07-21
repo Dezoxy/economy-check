@@ -6,9 +6,10 @@ import re
 import base
 
 
-def _parse_table(html, label):
+def _parse_table(html, label, keep_all=False):
     """Farside daily-flow tables: rows '<td>12 Jul 2026</td> ... <td>Total</td>'.
-    We take date + the LAST numeric cell of each row (the Total column)."""
+    We take date + the LAST numeric cell of each row (the Total column).
+    keep_all=True returns every parsed row (backfill slices by as-of date)."""
     text = html.replace("&minus;", "-").replace("−", "-")
     rows = []
     for tr in re.finditer(r"<tr[^>]*>(.*?)</tr>", text, re.S | re.I):
@@ -40,7 +41,7 @@ def _parse_table(html, label):
         raise base.FetchError("farside %s table layout changed — no rows parsed"
                               % label)
     rows.sort(key=lambda r: r["date"])
-    return rows[-10:]
+    return rows if keep_all else rows[-10:]
 
 
 def fetch(cfg, env):

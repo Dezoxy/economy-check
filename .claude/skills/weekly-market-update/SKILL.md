@@ -113,6 +113,35 @@ note it in the wrap-up, don't block.)
 - Delivery re-checks the gate itself; a `REFUSED` from deliver.py means the score
   sidecar is missing/failing — go back to Step 6, never `--force`.
 
+## Backtest mode (`$ARGUMENTS` = "backtest YYYY-MM-DD") — step F parity runs
+
+Same pipeline, historical week, with these overrides:
+
+- **Step 0:** caches come from `python3 shared/fetchers/backfill.py --date <d>`
+  (run it if the dated cache dir is missing), verified against the
+  `weekly-market-update-backtest` manifest.
+- **As-of discipline (hard rule):** the world ends at `<date>` 23:59 UTC. Analysts
+  use ONLY the as-of cache plus web articles whose publication date is ≤ `<date>`
+  (dated citations mandatory); no later prices, prints, or events may appear —
+  the fact-checker treats any post-date fact as a `block` finding. Sources absent
+  from the backtest cache (rss_news, mempool, gdpnow, cme_fedwatch, coingecko
+  global/TOTAL3) are HIÁNYZÓ ADAT, labeled in prose like any degraded source.
+- **Output:** `crypto-analyst/reports/backtests/<date>-heti-piaci-update.md`.
+  Poll: launch per template (no retrospective unless a prior backtest week exists).
+- **NO ledger writes.** The live ledger records reality, not rehearsals — backtest
+  calls live only in the report text. Say so in the wrap-up.
+- **Fact-check + editor:** exactly as live (sidecar `.score.json` beside the
+  backtest file; the gate applies).
+- **Parity scoring:** after our report passes, spawn `editor` AGAIN to score the
+  REAL benchmark post(s) of that week — extract the record(s) with matching date
+  from `crypto-analyst/corpus/corpus.jsonl` (weekly update + PDF deep-dive if one
+  exists), score them with the SAME rubric, write
+  `crypto-analyst/reports/backtests/kv-<date>.score.json`. Known asymmetry to
+  state in the verdict: rubric A dings the benchmark's untagged sourcing by
+  design — that is the standard, not an accident.
+- **No delivery, no PDF required.** Wrap up with the side-by-side: our total vs
+  the benchmark's, per-category deltas, and any template gap the week exposed.
+
 ## Step 8 — Wrap up
 
 Report in chat: score, ledger items added/graded, degraded sources used, open

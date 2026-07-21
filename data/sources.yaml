@@ -249,6 +249,15 @@ manifests:
     degraded_ok: [etf_flows, mempool, gdpnow, cme_fedwatch, rss_news, fed_calendar, econ_calendar, fx_rates]
     in_run_tools: [websearch_geopolitics]
 
+  # Step-F backtests: as-of caches via shared/fetchers/backfill.py. History can't
+  # provide everything a live run has — coingecko global (dominance/TOTAL3) and
+  # recent-only OI are degraded; rss_news/mempool/gdpnow/cme_fedwatch are absent
+  # by nature. The backtest report labels every gap HIÁNYZÓ ADAT.
+  weekly-market-update-backtest:
+    required: [binance_klines, defillama, feargreed, fred, fx_rates, etf_flows]
+    degraded_ok: [binance_funding, fed_calendar, econ_calendar, coingecko]
+    in_run_tools: [websearch_dated_articles_only]
+
   event-note-fomc:
     required: [fred, fed_calendar]
     degraded_ok: [coingecko, binance_klines, cme_fedwatch, rss_news]
