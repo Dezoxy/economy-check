@@ -22,27 +22,35 @@
 
 ```
 economy-check/
+├── README.md                  # human entry point (status + quick start)
 ├── AGENTS.md                  # constitution for all agents (source of truth)
 ├── CLAUDE.md                  # thin: imports AGENTS.md + Claude Code specifics
 ├── PLAN.md                    # ← this file
 ├── .claude/
 │   ├── settings.json          # permissions + hook wiring
-│   ├── agents/                # subagents: analysts, fact-checker, editor
-│   ├── skills/                # one skill per report type (+ style, charting)
+│   ├── agents/                # subagents: 4 analysts, fact-checker, editor
+│   ├── skills/                # one skill per report type   [weekly-market-update ✅]
 │   └── hooks/                 # net allowlist, report lint, quality gate
+├── .codex/                    # MIRROR of .claude for Codex (agents/*.toml, hooks.json, hooks/)
+├── .agents/skills/            # MIRROR of the portable skill copy
 ├── shared/
-│   ├── scripts/               # ingest, run, utilities        [ingest_examples.py ✅]
-│   ├── fetchers/              # one small script per data source
-│   ├── delivery/              # telegram.py, email.py
+│   ├── scripts/               # ingest_examples.py ✅, seed_ledger.py ✅, run_job.sh ✅
+│   ├── fetchers/              # 15 source modules (16 registry sources) + indicators, backfill
+│   ├── delivery/              # deliver.py, telegram.py, emailer.py, render_pdf.py
 │   └── charting/              # consistent chart look
 ├── data/
-│   ├── sources.yaml           # source registry + fallbacks + health
-│   └── cache/<YYYY-MM-DD>/    # immutable dated pulls (gitignored)
+│   ├── sources.yaml           # source registry + fallbacks + manifests
+│   ├── .gate_state.json       # Stop-gate attempt counters (gitignored)
+│   └── cache/<YYYY-MM-DD>/    # immutable dated pulls (gitignored) + health.jsonl
 ├── examples/                  # raw saved inputs (gitignored, local only)
 ├── crypto-analyst/            # Phase 1 job
-│   ├── corpus/                # normalized benchmark corpus   [corpus.jsonl ✅ 132 posts]
-│   ├── templates/             # report templates, rubric, style guide, ledger
-│   └── reports/<YYYY>/        # generated output (markdown + html)
+│   ├── corpus/                # corpus.jsonl ✅ 132 posts / 998K chars + shards/
+│   ├── templates/             # templates, rubric, style guide, ledger, doctrine
+│   ├── ledger.jsonl           # 67 calls (54 benchmark + 13 own)
+│   └── reports/
+│       ├── <YYYY>/            # live output: .md + .score.json + .pdf (pdf gitignored)
+│       ├── backtests/         # parity runs + kv-<date>.score.json
+│       └── scores.jsonl       # append-only score trend
 ├── macro-analyst/             # Phase 2 job (placeholder)
 ├── portfolio-review/          # Phase 3 job (placeholder)
 └── daily-pulse/               # Phase 4 job (placeholder)
@@ -65,7 +73,7 @@ what is **unique** to that job. Quality bar: a job is not "done" until step G pa
 
 ---
 
-## Phase 0 — Foundation (repo root + shared/)          `status: in progress`
+## Phase 0 — Foundation (repo root + shared/)          `status: done ✅`
 
 Built once, used by every job. Steps:
 
@@ -76,19 +84,27 @@ Built once, used by every job. Steps:
 - [x] `.claude/settings.json` + hooks: `net_allowlist.py` (PreToolUse: only sources.yaml domains, fail-closed, userinfo-bypass-proof), `report_lint.py` (PostToolUse: sections, no naked numbers incl. HU magnitude words, freshness), `quality_gate.py` (Stop: score sidecar ≥80 + category floors, 3-attempt cap, engages only when the session wrote a report)
 - [x] Shared subagents: `fact-checker.md`, `editor.md` (job-agnostic, parameterized by job folder)
 - [x] `shared/delivery/`: Telegram bot push + SMTP email via `deliver.py` (independently re-checks the full gate; `--dry-run`/`--alert` modes) — *live send untested until `.env` secrets exist*
-- [x] `data/sources.yaml` (16 sources incl. fx_rates for HUF conversions, 4 manifests) + fetcher framework (strict schema check, dated immutable cache with same-day retry short-circuit, schema-validated fallbacks cached under the requested id, health.jsonl) — coingecko reference fetcher live-tested
+- [x] `shared/delivery/render_pdf.py` (2026-07-21): md → house-styled HTML → headless-Chrome PDF,
+      the actual delivery artifact; wired into the skill, `deliver.py` and `run_job.sh`. Chrome is
+      a system tool (like pdftotext in ingestion); missing Chrome → HTML + exit 3, and delivery
+      falls back to the `.md`.
+- [x] `data/sources.yaml` (16 sources incl. fx_rates for HUF conversions, 5 manifests —
+      the 5th, `weekly-market-update-backtest`, was added in step F) + fetcher framework (strict schema check, dated immutable cache with same-day retry short-circuit, schema-validated fallbacks cached under the requested id, health.jsonl) — coingecko reference fetcher live-tested
 - [x] `shared/charting/style.py` (MA colors match the prose vocabulary; matplotlib is the repo's only non-stdlib dep, charts land in step D/E)
 - [x] Runner: `shared/scripts/run_job.sh` (resolves claude CLI for launchd PATH, wall-clock timeout, alerts on every failure path, post-run artifact assertion)
 
 **DoD:** hooks + gate + delivery proven on a synthetic report (deterministic test suite,
-2026-07-20); live delivery smoke test blocked on `.env` (FRED_API_KEY, TELEGRAM_*, SMTP_*).
+2026-07-20). `FRED_API_KEY` is filled, so the data plane is unblocked; the live delivery smoke
+test still waits on `TELEGRAM_BOT_TOKEN`, `TELEGRAM_CHAT_ID`, `SMTP_HOST/USER/PASS` and
+`EMAIL_FROM` — the only empty keys left in `.env`.
 
-## Phase 1 — crypto-analyst/                            `status: steps A+B done ✅`
+## Phase 1 — crypto-analyst/                   `status: A–F done ✅ — G remaining`
 
 The KriptoVadász replacement. Benchmark corpus: 132 posts (Jan 2025 + Dec 2025 → Jul 2026),
 18 weekly updates + 11 weekly PDF deep-dives + FOMC notes + event notes + altcoin/onchain posts.
 
-- [x] **A. Corpus** — `corpus.jsonl` built (743K chars, 1 junk file skipped)
+- [x] **A. Corpus** — `corpus.jsonl` built: 132 records, **998,256 chars** (1 junk file
+      skipped; the original 743K figure predates the base64 truncation fix found in step F)
 - [x] **B. Derive** — done via 4-agent corpus analysis → `templates/`: heti-piaci-update.md, event-note.md (FOMC/macro/geo/thematic/institutional), onchain-review.md, altcoin-screen.md, rubric.md (/100, publish gate ≥80), style-guide.md, prediction-ledger.md (schema + 41 graded KV calls seeded; KV baseline: 49% hit / 37% partial / 15% miss, misses never self-acknowledged — our bar: beat it symmetrically)
 - [x] **B2. Doctrine** — `templates/analytical-doctrine.md`: his reasoning playbook
       (28 canonical patterns from 144 mined instances, full corpus), outcome-weighted
@@ -97,7 +113,7 @@ The KriptoVadász replacement. Benchmark corpus: 132 posts (Jan 2025 + Dec 2025 
       forecasts, nowcast-vs-print). Loaded by all analysts + composer; patterns cited
       by name in briefs so the fact-checker audits reasoning provenance. This is the
       "clone the mind" artifact — and the reusable core for Phases 2–4 + /elemzes.
-- [x] **C. Wire** — skill `weekly-market-update` (full pipeline: verify → 4 parallel analyst briefs → compose → ledger → fact-check loop → editor score → gated delivery; `dry-run` mode = acceptance check, passed headless 2026-07-20); subagents macro/crypto/onchain/sentiment-analyst wired to cache files + section assignments; data manifests in sources.yaml; `ledger.jsonl` seeded via `seed_ledger.py` (42 benchmark calls — note: templates table has 14 partials vs 15 claimed in its own baseline line, flagged to tom). Later skills (`event-note`, `onchain-review`, `altcoin-screen`) follow the same pattern after E/F prove it.
+- [x] **C. Wire** — skill `weekly-market-update` (full pipeline: verify → 4 parallel analyst briefs → compose → ledger → fact-check loop → editor score → gated delivery; `dry-run` mode = acceptance check, passed headless 2026-07-20); subagents macro/crypto/onchain/sentiment-analyst wired to cache files + section assignments; data manifests in sources.yaml; `ledger.jsonl` seeded via `seed_ledger.py` (42 benchmark calls, later corrected to 54 by the dropped-call restore — the ledger now holds **67 rows: 54 benchmark + 13 own**; note: templates table has 14 partials vs 15 claimed in its own baseline line, flagged to tom). Later skills (`event-note`, `onchain-review`, `altcoin-screen`) follow the same pattern after E/F prove it.
 - [x] **D. Data** — 14 fetchers implemented + live-tested 2026-07-20 (11 green, all
       schema-checked): binance_klines with the full indicator contract (MA50/100/150/200d,
       200w, Bollinger, RSI+RSI-MA daily+weekly, VWAP anchored at the TRUE 2022 cycle
@@ -108,8 +124,8 @@ The KriptoVadász replacement. Benchmark corpus: 132 posts (Jan 2025 + Dec 2025 
       tool page is JS), fed_calendar (FOMC scrape, 55 meetings parsed), rss_news
       (DTD-rejecting stdlib parse), econ_calendar (FRED releases API — bls.gov blocks
       bots), cme_fedwatch (graceful-fail by design → relayed-via-news policy).
-      **Blocked on tom:** `FRED_API_KEY` in `.env` (see `.env.example`) — fred is a
-      required source, verify FAILs until then. sosovalue fallback needs its key (optional).
+      ~~**Blocked on tom:** `FRED_API_KEY`~~ — **resolved**: the key is in `.env` and fred
+      verifies. (sosovalue fallback key optional; a coingecko demo key is also present.)
       *Known limit: pro-tier onchain (Glassnode/CryptoQuant) paywalled → free proxies,
       confidence labeled.*
 - [x] **E. First report** — `reports/2026/2026-07-21-heti-piaci-update.md`, full pipeline
@@ -119,7 +135,9 @@ The KriptoVadász replacement. Benchmark corpus: 132 posts (Jan 2025 + Dec 2025 
       (residue: length over band, missing Érdekesség/self-Q&A voice devices, hyphenation
       sweep — fixes queued in the score sidecar for issue #2). Delivery pending channel
       secrets (TELEGRAM_*/SMTP_ in .env).
-- [x] **F. Backtest** — 3 of 3 weeks done. Full-rubric totals ours vs benchmark:
+- [x] **F. Backtest** — 3 of 3 weeks done, on as-of caches built by
+      `shared/fetchers/backfill.py` + the `weekly-market-update-backtest` manifest + the skill's
+      backtest mode. Full-rubric totals ours vs benchmark:
       07-05 **87.5**/47.0, 03-15 **84.5**/67.0, 05-17 **93.0**/35.5.
       **Parity metric (category C, the only section no benchmark-gap item touches):
       ours 17 / 17 / 17, theirs 14 / 20 / 8 — we win two of three, average 17.0 vs 14.0.**
@@ -263,10 +281,12 @@ weekly quality is proven, so the daily habit inherits a validated pipeline.
   written from their own marked-up essay. Category C (depth/mechanism) is the only
   section no benchmark-gap item touches: ours 17 vs theirs 14. Treat C (or C+D1/D2) as
   the real analytical parity metric, the full total as a compliance metric.
-- scores.jsonl has no way to distinguish our reports from benchmark scores, and no
-  revision field — a benchmark row would pollute the 3-report-decline trend monitor,
-  and a re-scored report either double-counts or loses its audit trail. Add a
-  `kind`/`revision` discriminator before the parity series grows.
+- **scores.jsonl is already polluted — no longer a hazard, a defect.** It has no way to
+  distinguish our reports from benchmark scores and no revision field, so the 05-17 backtest
+  wrote **two rows for the same report (88.5, then 93)**: 5 rows for 4 reports, and any trend
+  or average taken from the file is wrong. The three backtest rows also share a series with the
+  live report, so the decline monitor cannot tell a rehearsal from a run. Add `kind`
+  (live/backtest/benchmark) + `revision`, and reconcile the existing rows, before the series grows.
 - Template gaps found by the 07-05 parity run: sector rotation is `[EXT]`-only but
   carried a weekly thesis in the benchmark (promote to weekly); no slot for a
   methodology-limits caveat ("rotation makes index TA unreliable"); MAKRÓ is US-only
@@ -286,14 +306,32 @@ weekly quality is proven, so the daily habit inherits a validated pipeline.
 
 | Phase | Job | Status |
 |---|---|---|
-| 0 | foundation | 🟢 built + tested (pending: .env secrets, GitHub push decision) |
-| 1 | crypto-analyst | 🟢 A+B+B2+C+D+E+F ✅ (F 3/3: 87.5/47.0, 84.5/67.0, 93.0/35.5; **category C avg 17.0 vs 14.0 — bar cleared**) — next: step G (schedule + delivery + monitoring) |
+| 0 | foundation | 🟢 built + tested; pushed to Dezoxy/economy-check (in sync). Pending: delivery channel secrets (TELEGRAM_*/SMTP_*) |
+| 1 | crypto-analyst | 🟢 A+B+B2+C+D+E+F ✅, PDF delivery stage wired (F 3/3: 87.5/47.0, 84.5/67.0, 93.0/35.5; **category C avg 17.0 vs 14.0 — bar cleared**) — next: step G (schedule + delivery + monitoring) |
 | 2 | macro-analyst | ⚪ planned |
 | 3 | portfolio-review | ⚪ planned |
 | 4 | daily-pulse | ⚪ planned |
 
 ## Changelog
 
+- 2026-08-25 — **Doc sync: AGENTS.md / CLAUDE.md / PLAN.md reconciled with the repo, README.md
+  added.** No code touched. What the docs were wrong about: the phase headers still said
+  "Phase 0 in progress / Phase 1 steps A+B" while the bodies had A–F ticked; the layout tree
+  predated `render_pdf.py`, `backfill.py`, `reports/backtests/`, `scores.jsonl` and
+  `analytical-doctrine.md`; the corpus was quoted at 743K chars (998,256 since the step-F
+  ingest fix); the ledger at 42 benchmark calls (67 rows = 54 benchmark + 13 own); sources.yaml
+  at 4 manifests (5); and `FRED_API_KEY` as blocking (filled — only the delivery channel
+  secrets are still empty). Two things newly documented because they exist but appeared in no
+  map: the PDF delivery stage, and the `.codex/` + `.agents/` runtime mirrors — plain copies of
+  `.claude/`, so AGENTS.md now carries a sync rule (edit `.claude/` first, re-copy in the same
+  commit) to stop the quality plane forking into three versions. Backlog item upgraded from
+  hazard to defect: scores.jsonl has 5 rows for 4 reports (05-17 scored 88.5, then 93), so the
+  score trend is already wrong. The mirrors are still untracked in git — commit or ignore them.
+- 2026-07-21 — **The pipeline now ends in a PDF.** `shared/delivery/render_pdf.py`
+  (md → house-styled HTML → headless-Chrome print) wired into the skill (step 7), `deliver.py`
+  and `run_job.sh`; `.pdf`/`.html` under `*/reports/` gitignored as regenerable artifacts.
+  Chrome joins matplotlib as the second dependency outside the stdlib, and it is a system tool,
+  not a package — no Chrome means HTML + exit 3 and a `.md` fallback, never a failed run.
 - 2026-07-21 — Phase 1 step F **complete**, backtest week 3 of 3 (2026-05-17, a grinding
   deterioration week: BTC rejected at a four-tool 81 782,66–82 981,80 confluence band and
   sitting on its 150-day MA, ETH's weekly close below its 200-week MA, CPI re-accelerating

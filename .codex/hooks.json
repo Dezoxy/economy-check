@@ -1,0 +1,36 @@
+{
+  "hooks": {
+    "PreToolUse": [
+      {
+        "matcher": "WebFetch|Bash",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "python3 '/Users/horvathtoom/Documents/economy-check/.codex/hooks/net_allowlist.py'"
+          }
+        ]
+      }
+    ],
+    "PostToolUse": [
+      {
+        "matcher": "Write|Edit|MultiEdit",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "python3 '/Users/horvathtoom/Documents/economy-check/.codex/hooks/report_lint.py'"
+          }
+        ]
+      }
+    ],
+    "Stop": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "python3 '/Users/horvathtoom/Documents/economy-check/.codex/hooks/quality_gate.py'"
+          }
+        ]
+      }
+    ]
+  }
+}
